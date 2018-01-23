@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "906258248267",
+    "firebase_url": "https://learnreactnative-a6afa.firebaseio.com",
+    "project_id": "learnreactnative-a6afa",
+    "storage_bucket": "learnreactnative-a6afa.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:906258248267:android:5374035fcc5bbaae",
+        "android_client_info": {
+          "package_name": "com.heyo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "906258248267-6c2qbved00gpatc0aafg5qgcmqj8ku8l.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAs3KSdM7kVs1a3gH7qcTjxJS8xZjHzUkA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
