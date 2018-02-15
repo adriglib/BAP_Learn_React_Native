@@ -30,8 +30,8 @@ class TableOfContents extends React.Component {
                 items.forEach(item => {
                     this.title = item.val().title;
                     this.datas = item.val().data;
-                    this.sectionKey = item.key
-                    this.items.push({title: this.title, data: this.datas, sectionKey: this.key});
+                    this.sectionKey = item.key;
+                    this.items.push({title: this.title, data: this.datas, sectionKey: this.sectionKey});
                 })
                 this.setState({
                     dataSource: this.items,
@@ -41,11 +41,11 @@ class TableOfContents extends React.Component {
     }
 
     sectionList () {
-        console.log(this.state.dataSource)
+        console.log(this.dataSource)
         return <SectionList
             sections={this.state.dataSource}
-            renderItem={({item}) =>
-                <TouchableOpacity  onPress={() => this.props.navigator.navigate('Detail', {name: item, key: item.key} )}>
+            renderItem={({item, index, section}) =>
+                <TouchableOpacity  onPress={() => this.props.navigator.navigate('Detail', {name: item, sectionKey: section.sectionKey, itemKey: index} )}>
                     <ListItem>{item}</ListItem>
                 </TouchableOpacity>}
             renderSectionHeader={({section}) => <ListItemSmallTitle>{section.title}</ListItemSmallTitle>}
