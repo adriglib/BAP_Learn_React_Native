@@ -10,11 +10,15 @@
 		"opencollective": "^1.0.3",
 		"react": "16.0.0",
 		"react-native": "0.51.0",
+		"react-native-animatable": "^1.2.4",
 		"react-native-camera-roll-picker": "^1.2.3",
 		"react-native-firebase": "^3.2.0",
 		"react-native-linear-gradient": "^2.3.0",
+		"react-native-markdown-renderer": "^3.0.2",
 		"react-native-markdown-view": "^1.1.4",
-		"react-navigation": "^1.0.0-beta.19"
+		"react-native-render-html": "^3.8.1",
+		"react-navigation": "^1.0.0-beta.19",
+		"react-timer-mixin": "^0.13.3"
 	},
 	"devDependencies": {
 		"babel-jest": "21.2.0",

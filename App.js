@@ -5,6 +5,8 @@ import { StyleSheet, Text, View, ScrollView } from 'react-native';
 import { HomeScreen }  from './app/Screens/Home/HomeScreen';
 import { DocumentationScreen }  from './app/Screens/Documentation/DocumentationScreen';
 import {DocumentationItemScreen} from "./app/Screens/Documentation/DocumentationItemScreen";
+import {Quiz} from "./app/Screens/Quiz/Quiz";
+import {Levels} from "./app/Screens/Quiz/Levels";
 
 const NavigationApp = StackNavigator({
     Home: {
@@ -43,6 +45,41 @@ const NavigationApp = StackNavigator({
     Detail: {
         path: 'detail/:name',
         screen: DocumentationItemScreen,
+        navigationOptions: {
+            // header: null,
+
+            headerTintColor: 'white',
+            headerStyle: {
+                backgroundColor: '#55d3c8',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                borderBottomWidth: 0, // removes the border on the bottom
+                elevation: 0,       //remove shadow on Android
+                shadowOpacity: 0,
+            }}
+    },
+    
+    Quiz: {
+        screen: Quiz,
+        navigationOptions: {
+            // header: null,
+
+            headerTintColor: 'white',
+            headerStyle: {
+                backgroundColor: '#55d3c8',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                borderBottomWidth: 0, // removes the border on the bottom
+                elevation: 0,       //remove shadow on Android
+                shadowOpacity: 0,
+            }}
+    },
+    Levels: {
+        screen: Levels,
         navigationOptions: {
             // header: null,
 

@@ -7,6 +7,10 @@ import BigLightTitleText from '../../Components/Text/BigLightTitleText';
 import App from '../../Components/General/App';
 
 export class HomeScreen extends Component {
+    
+//                    <View style={styles.imageContainer}>
+//                        <Image style={styles.homeUp} source={require('../../../img/home_down.png')}/>
+//                    </View>
 
     render(){
         const { navigate } = this.props.navigation;
@@ -25,7 +29,7 @@ export class HomeScreen extends Component {
                     </View>
                     <View style={styles.container}>
                         {/*<App></App>*/}
-                        <TouchableOpacity onPress={() => navigate('')}>
+                        <TouchableOpacity onPress={() => navigate('Levels')}>
                             <Button buttonText="Play the game"/>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('')}>
@@ -37,9 +41,6 @@ export class HomeScreen extends Component {
                         <TouchableOpacity onPress={() => navigate('')}>
                             <Button buttonText="Settings"/>
                         </TouchableOpacity>
-                    </View>
-                    <View style={styles.imageContainer}>
-                        <Image style={styles.homeUp} source={require('../../../img/home_down.png')}/>
                     </View>
                 </ScrollView>
             </View>

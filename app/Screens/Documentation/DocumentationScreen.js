@@ -1,12 +1,20 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import {    StyleSheet, Text, View,ScrollView, Image, Dimensions, SectionList, TouchableOpacity, Linking } from 'react-native';
+import {StyleSheet, 
+        Text, 
+        View,
+        ScrollView, 
+        Image, 
+        Dimensions, 
+        SectionList, 
+        TouchableOpacity, 
+        Linking } from 'react-native';
 import BigLightTitleText from '../../Components/Text/BigLightTitleText';
 import TableOfContents from '../../Components/Tables/TableOfContents';
 import App from '../../Components/General/App';
 
 export class DocumentationScreen extends Component {
-
+    
     static navigationOptions = {
         title: 'Documentation'
     };
@@ -24,7 +32,11 @@ export class DocumentationScreen extends Component {
                     <View style={styles.container}>
                         <Text>With this cheat sheet you can refresh your React Native knowledge. If you are new to the framework you can read the documentation first.</Text>
                         <Text onPress={() => Linking.openURL('http://facebook.github.io/react-native/docs/getting-started.html')}>Press here to open the docs.</Text>
-                        <TableOfContents
+                    </View>
+                    <View style={styles.container}>
+                        {/*<Text>With this cheat sheet you can refresh your React Native knowledge. If you are new to the framework you can read the documentation first.</Text>*/}
+                        {/*<Text onPress={() => Linking.openURL('http://facebook.github.io/react-native/docs/getting-started.html')}>Press here to open the docs.</Text>*/}
+                        <TableOfContents style={styles.tableOfContents}
                         navigator={this.props.navigation}
                         />
                     </View>

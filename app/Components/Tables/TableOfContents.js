@@ -66,7 +66,7 @@ class TableOfContents extends React.Component {
         // console.log(this.items)
         // const { navigator } = this.props.navigation;
         return (
-        <View>
+        <View style={styles.test}>
             {this.state.isLoading ? this.loadingList() : this.sectionList() }
         </View>
         );
@@ -77,8 +77,11 @@ class TableOfContents extends React.Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center'
     },
+    test: {
+        flex: 1,
+        // alignSelf: 'stretch'
+    }
 });
 
 export default TableOfContents;
