@@ -3584,6 +3584,12 @@ react-native-markdown-view@^1.1.4:
     react-native-tabular-grid-markdown-view "0.1.x"
     simple-markdown "0.3.x"
 
+react-native-progress@^3.4.0:
+  version "3.4.0"
+  resolved "https://registry.yarnpkg.com/react-native-progress/-/react-native-progress-3.4.0.tgz#c002e6efb2f0b82dd6889510e669c492da2718ac"
+  dependencies:
+    prop-types "^15.5.8"
+
 react-native-render-html@^3.8.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/react-native-render-html/-/react-native-render-html-3.8.1.tgz#c7d3dfc437b1a8301f97f3d1485a05fb978284a5"
@@ -3690,7 +3696,7 @@ react-test-renderer@16.0.0:
     fbjs "^0.8.16"
     object-assign "^4.1.1"
 
-react-timer-mixin@^0.13.2:
+react-timer-mixin@^0.13.2, react-timer-mixin@^0.13.3:
   version "0.13.3"
   resolved "https://registry.yarnpkg.com/react-timer-mixin/-/react-timer-mixin-0.13.3.tgz#0da8b9f807ec07dc3e854d082c737c65605b3d22"
 

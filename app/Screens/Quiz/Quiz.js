@@ -16,66 +16,122 @@ import {
 
 import SmallerLightTitleText from '../../Components/Text/SmallerLightTitleText';
 import Animbutton from '../../Components/Buttons/AnimatedButton';
+import firebase from 'react-native-firebase';
 
 
 let newArray = []
+let currentQuiz = {}
+let nav;
 
-const quizData = {
-    "quiz": {
-        "quiz1": {
-            "question1": {
-                "correctOption": "3",
-                "quizOptions": {
-                    "1": "Java",
-                    "2": "PHP",
-                    "3": "Javascript",
-                    "4": "IOS"
-                },
-                "question": "React is a ____ library"
-            },
-            "question2": {
-                "correctOption": "4",
-                "quizOptions": {
-                    "1": "XML",
-                    "2": "YML",
-                    "3": "HTML",
-                    "4": "JSX"
-                },
-                "question": "____ tag syntax is used in React"
-            },
-            "question3": {
-                "correctOption": "1",
-                "quizOptions": {
-                    "1": "Single root DOM node",
-                    "2": "Double root DOM node",
-                    "3": "Multiple root DOM node",
-                    "4": "None of the above"
-                },
-                "question": "Application built with just React usually have ____"
-            },
-            "question4": {
-                "correctOption": "2",
-                "quizOptions": {
-                    "1": "mutable",
-                    "2": "immutable",
-                    "3": "variable",
-                    "4": "none of the above"
-                },
-                "question": "React elements are ____"
-            },
-            "question5": {
-                "correctOption": "3",
-                "quizOptions": {
-                    "1": "functions",
-                    "2": "array",
-                    "3": "components",
-                    "4": "json data"
-                },
-                "question": "React allows to split UI into independent and reusable pieses of ____"
-            }
-        }
-    }
-}
+// const quizData = {
+//     "quiz": {
+//         "1": {
+//             "question1": {
+//                 "correctOption": "3",
+//                 "quizOptions": {
+//                     "1": "Java",
+//                     "2": "PHP",
+//                     "3": "Javascript",
+//                     "4": "IOS"
+//                 },
+//                 "question": "React is a ____ library"
+//             },
+//             "question2": {
+//                 "correctOption": "4",
+//                 "quizOptions": {
+//                     "1": "XML",
+//                     "2": "YML",
+//                     "3": "HTML",
+//                     "4": "JSX"
+//                 },
+//                 "question": "____ tag syntax is used in React"
+//             },
+//             "question3": {
+//                 "correctOption": "1",
+//                 "quizOptions": {
+//                     "1": "Single root DOM node",
+//                     "2": "Double root DOM node",
+//                     "3": "Multiple root DOM node",
+//                     "4": "None of the above"
+//                 },
+//                 "question": "Application built with just React usually have ____"
+//             },
+//             "question4": {
+//                 "correctOption": "2",
+//                 "quizOptions": {
+//                     "1": "mutable",
+//                     "2": "immutable",
+//                     "3": "variable",
+//                     "4": "none of the above"
+//                 },
+//                 "question": "React elements are ____"
+//             },
+//             "question5": {
+//                 "correctOption": "3",
+//                 "quizOptions": {
+//                     "1": "functions",
+//                     "2": "array",
+//                     "3": "components",
+//                     "4": "json data"
+//                 },
+//                 "question": "React allows to split UI into independent and reusable pieses of ____"
+//             }
+//         },
+//         "2": {
+//             "question1": {
+//                 "correctOption": "3",
+//                 "quizOptions": {
+//                     "1": "Javkzeha",
+//                     "2": "PHljdP",
+//                     "3": "Javlkscascript",
+//                     "4": "IOS"
+//                 },
+//                 "question": "Reactlkqd is a ____ library"
+//             },
+//             "question2": {
+//                 "correctOption": "4",
+//                 "quizOptions": {
+//                     "1": "XML",
+//                     "2": "YML",
+//                     "3": "HTML",
+//                     "4": "JSX"
+//                 },
+//                 "question": "____ tag syntax is used in React"
+//             },
+//             "question3": {
+//                 "correctOption": "1",
+//                 "quizOptions": {
+//                     "1": "Single root DOM node",
+//                     "2": "Double root DOM node",
+//                     "3": "Multiple root DOM node",
+//                     "4": "None of the above"
+//                 },
+//                 "question": "Application built with just React usually have ____"
+//             },
+//             "question4": {
+//                 "correctOption": "2",
+//                 "quizOptions": {
+//                     "1": "mutable",
+//                     "2": "immutable",
+//                     "3": "variable",
+//                     "4": "none of the above"
+//                 },
+//                 "question": "React elements are ____"
+//             },
+//             "question5": {
+//                 "correctOption": "3",
+//                 "quizOptions": {
+//                     "1": "functions",
+//                     "2": "array",
+//                     "3": "components",
+//                     "4": "json data"
+//                 },
+//                 "question": "React allows to split UI into independent and reusable pieses of ____"
+//             }
+//         }
+//     }
+// }
+
 
 export class Quiz extends Component {
 
@@ -86,42 +142,83 @@ export class Quiz extends Component {
     constructor(props) {
         
         super(props);
-        this.questionNumber = 0
+        this.questionNumber = 1
         this.score = 0
+     
+        const quizData = {};
+        const currentQuiz = {};
+        const newArray = [];
+        nav = this.props.navigation;
 
-        const currentQuiz = quizData.quiz.quiz1
-        newArray = Object.keys(currentQuiz).map(function (i) {
-            return currentQuiz[i]
-        });
-        
+        this.itemsRef = firebase.database().ref('Quiz/' + nav.state.params.quizNr   );
+
+
         this.state = {
-            question: newArray[this.questionNumber].question,
-            quizOptions: newArray[this.questionNumber].quizOptions,
-            correctOption: newArray[this.questionNumber].correctOption,
+            question: 'Loading...',
+            quizOptions: {1: 'Loading...', 2: 'Loading...', 3: 'Loading...', 4: 'Loading...'},
+            correctOption: 'Loading',
             countCheck: 0,
-            correct: null
+            correct: 0,
         }
+
+        // console.log(nav.state.params.quizNr)
+
+        // const currentQuiz = quizData.quiz[nav.state.params.quizNr]
+        // newArray = Object.keys(currentQuiz).map(function (i) {
+        //     return currentQuiz[i]
+        // });
+        
+        // this.state = {
+        //     question: newArray[this.questionNumber].question,
+        //     quizOptions: newArray[this.questionNumber].quizOptions,
+        //     correctOption: newArray[this.questionNumber].correctOption,
+        //     countCheck: 0,
+        //     correct: null,
+        // }
+    }
+
+    componentDidMount() {
+        let database = this.itemsRef.once('value');
+        database.then(items => {
+            quizData = items._value;
+            console.log(quizData)
+            console.log(nav.state.params.quizNr)
+            // currentQuiz = quizData['question' + nav.state.params.quizNr]
+            // console.log(currentQuiz);
+            newArray = quizData;
+
+            console.log(newArray['question' + this.questionNumber])
+
+            this.setState({
+                question: newArray['question' + this.questionNumber].question,
+                quizOptions: newArray['question' + this.questionNumber].quizOptions,
+                correctOption: newArray['question' + this.questionNumber].correctOption,
+                countCheck: 0,
+                correct: 0,
+            });
+        });
     }
 
     prev() {
-        if (this.questionNumber > 0) {
+        if (this.questionNumber > 1) {
             this.questionNumber--
                 this.setState({
-                    question: newArray[this.questionNumber].question,
-                    quizOptions: newArray[this.questionNumber].quizOptions,
-                    correctOption: newArray[this.questionNumber].correctOption
+                    question: newArray['question' + this.questionNumber].question,
+                    quizOptions: newArray['question' + this.questionNumber].quizOptions,
+                    correctOption: newArray['question' + this.questionNumber].correctOption
                 })
         }
     }
 
     next() {
-        if (this.questionNumber < newArray.length - 1) {
+
+        if (this.questionNumber < Object.keys(quizData).length) {
             this.questionNumber++
                 this.setState({
                     countCheck: 0,
-                    question: newArray[this.questionNumber].question,
-                    quizOptions: newArray[this.questionNumber].quizOptions,
-                    correctOption: newArray[this.questionNumber].correctOption
+                    question: newArray['question' + this.questionNumber].question,
+                    quizOptions: newArray['question' + this.questionNumber].quizOptions,
+                    correctOption: newArray['question' + this.questionNumber].correctOption
                 })
         } else {
 alert('no questions')
@@ -133,7 +230,8 @@ alert('no questions')
  
       var originalText = this.state.question.toString();
 
-      var NewText = originalText.replace("____", this.state.quizOptions[this.state.correctOption].toString());
+      var NewText = originalText.replace("___", this.state.quizOptions[this.state.correctOption].toString());
+
 
       this.setState({ question : NewText});
 
@@ -155,7 +253,7 @@ alert('no questions')
                 this.score += 1
                                 
                 this.setState({correct: true, status: false}, function () {
-                    console.log(this.state.correct)
+                    // console.log(this.state.correct)
                     setTimeout(() => {
                       this.next();
                     }, 3000);
@@ -165,7 +263,7 @@ alert('no questions')
             }
             else {
                 this.setState({correct: false, status: false}, function () {
-                    console.log(this.state.correct)
+                    // console.log(this.state.correct)
                     setTimeout(() => {
                       this.next();
                     }, 5000);
@@ -186,6 +284,8 @@ alert('no questions')
   render() {
     let _this = this
     const currentOptions = this.state.quizOptions
+
+    const { state } = this.props.navigation;
     
     const quizOptions = Object.keys(currentOptions).map( function(i) {
       return (  

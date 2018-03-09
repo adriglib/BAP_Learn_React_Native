@@ -54,7 +54,7 @@ export default class Animbutton extends Component {
   render() {
     const status = this.state.status;
           
-    console.log('Button; ' + this.props.correct);   
+    // console.log('Button; ' + this.props.correct);   
       
     return (
       <TouchableWithoutFeedback onPress={() => this._onPress()}>
