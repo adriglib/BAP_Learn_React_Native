@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import firebase from 'react-native-firebase';
 //import Button  from './app/Components/Button';
-import { HomeScreen }  from './app/Screens/Home/HomeScreen';
+import { HomeScreenLoggedIn }  from './app/Screens/Home/HomeScreenLoggedIn';
+import { SplashScreen }  from './app/Screens/Splash/SplashScreen';
 import { DocumentationScreen }  from './app/Screens/Documentation/DocumentationScreen';
 import {DocumentationItemScreen} from "./app/Screens/Documentation/DocumentationItemScreen";
 import {Quiz} from "./app/Screens/Quiz/Quiz";
 import {Levels} from "./app/Screens/Quiz/Levels";
+import {LogInScreen} from "./app/Screens/User/LogInScreen";
+import {RegistrationScreen} from "./app/Screens/User/RegistrationScreen";
+import { HomeScreenLoggedOut } from './app/Screens/Home/HomeScreenLoggedOut';
 
 const NavigationApp = StackNavigator({
+    Splash: {
+        screen: SplashScreen,
+        navigationOptions: {
+            header: null,
+        }
+    },
     Home: {
-        screen: HomeScreen,
+        screen: HomeScreenLoggedIn,
         navigationOptions: {
             header: null,
             headerStyle: {
@@ -24,6 +35,44 @@ const NavigationApp = StackNavigator({
                 shadowOpacity: 0,
             },
             }
+    },
+    HomeNoLogin: {
+        screen: HomeScreenLoggedOut,
+        navigationOptions: {
+            header: null,
+            headerStyle: {
+                backgroundColor: 'transparent',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                borderBottomWidth: 0, // removes the border on the bottom,
+                elevation: 0,       //remove shadow on Android
+                shadowOpacity: 0,
+            },
+            }
+    },
+    LogIn: {
+        screen: LogInScreen,
+        navigationOptions: {
+            header: null,
+        }
+    },
+    Registration: {
+        screen: RegistrationScreen,
+        navigationOptions: {
+            // header: null,
+            headerTintColor: 'white',
+            headerStyle: {
+                backgroundColor: '#55d3c8',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                borderBottomWidth: 0, // removes the border on the bottom
+                elevation: 0,       //remove shadow on Android
+                shadowOpacity: 0,
+            }}
     },
     Documentation: {
         screen: DocumentationScreen,
@@ -97,18 +146,22 @@ const NavigationApp = StackNavigator({
     },
 });
 
+
 export default class MyFirstApp extends Component {
+    constructor() {
+        super();
+    }
+    
+    
     render() {
-        return(
-            <NavigationApp/>
-           )
+        return <NavigationApp />;
     }
 }
 
 const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
-        backgroundColor: 'lightgrey'
+        backgroundColor: '#fff'
     },
     container: {
         flex: 1,

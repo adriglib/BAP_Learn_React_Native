@@ -10,7 +10,7 @@ export default class LoadingCircle extends Component {
     render() {
         return(
             <View style={styles.horizontal}>
-                <ActivityIndicator style={styles.loadingCircle} size="large" color="#55d3c8" />
+                <ActivityIndicator style={styles.loadingCircle} size="large" color={this.props.color} />
             </View>
 
         )

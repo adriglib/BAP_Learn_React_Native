@@ -56,7 +56,7 @@ class TableOfContents extends React.Component {
     loadingList () {
         return (
             <View style={styles.container}>
-                <LoadingCircle/>
+                <LoadingCircle color="#55d3c8"/>
             </View>
         )
 

@@ -6,7 +6,7 @@ import BigBoldTitleText from '../../Components/Text/BigBoldTitleText';
 import BigLightTitleText from '../../Components/Text/BigLightTitleText';
 import App from '../../Components/General/App';
 
-export class HomeScreen extends Component {
+export class HomeScreenLoggedOut extends Component {
     
 //                    <View style={styles.imageContainer}>
 //                        <Image style={styles.homeUp} source={require('../../../img/home_down.png')}/>
@@ -22,24 +22,21 @@ export class HomeScreen extends Component {
                 <ScrollView style={styles.scrollContainer}>
                     <View style={styles.imageContainer}>
                         <Image style={styles.homeUp} source={require('../../../img/home_up.png')}/>
-                        <BigBoldTitleText style={styles.title}>
+                        <BigLightTitleText style={styles.title}>
                             Learn React Native
-                        </BigBoldTitleText>
+                        </BigLightTitleText>
 
                     </View>
                     <View style={styles.container}>
                         {/*<App></App>*/}
-                        <TouchableOpacity onPress={() => navigate('Levels')}>
-                            <Button buttonText="Play the game"/>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigate('')}>
-                            <Button buttonText="Trophies"/>
-                        </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('Documentation')}>
                             <Button buttonText="Learn React Native"/>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('')}>
                             <Button buttonText="Settings"/>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigate('LogIn')}>
+                            <Button buttonText="Sign in"/>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
