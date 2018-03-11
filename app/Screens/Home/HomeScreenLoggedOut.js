@@ -5,6 +5,7 @@ import Button from '../../Components/Buttons/SquareLargeButton';
 import BigBoldTitleText from '../../Components/Text/BigBoldTitleText';
 import BigLightTitleText from '../../Components/Text/BigLightTitleText';
 import App from '../../Components/General/App';
+import firebase from 'react-native-firebase';
 
 export class HomeScreenLoggedOut extends Component {
     
@@ -14,6 +15,7 @@ export class HomeScreenLoggedOut extends Component {
 
     render(){
         const { navigate } = this.props.navigation;
+        console.log(firebase.auth().currentUser)
         return (
             <View style={{flex: 1}}>
                 {/*<Text onPress={() => navigate('Profile')}>*/}

@@ -16,6 +16,8 @@ import TableOfContents from '../../Components/Tables/TableOfContents';
 import App from '../../Components/General/App';
 import firebase from 'react-native-firebase';
 import Button from '../../Components/Buttons/SquareLargeButton';
+import TextField from '../../Components/Forms/TextField';
+import validate from '../../Components/Forms/ValidateWrapper';
 
 export class LogInScreen extends Component {
     
@@ -26,115 +28,151 @@ export class LogInScreen extends Component {
     
     constructor(props) {
         super(props);
+
+        this.state = {
+            email: '',
+            emailError: '',
+            password: '',
+            passwordError: '',
+            error: ''
+        }
     }
 
     loggedIn(){
         this.props.navigation.navigate('Home')
     }
 
+    onLogin() {
+        console.log(this.state.email)
+        console.log(this.state.password)
+        const emailError = validate('email', this.state.email)
+        const passwordError = validate('password', this.state.password)
+    
+        this.setState({
+          emailError: emailError,
+          passwordError: passwordError
+        })
+    
+        if (emailError == null && passwordError == null) {
+            firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+            .then((user) => {
+            // If you need to do anything with the user, do it here
+            // The user will be logged in automatically by the 
+            // `onAuthStateChanged` listener we set up in App.js earlier
+            })
+            .catch((error) => {
+            const { code, message } = error;
+            console.log(error);
+            this.setState({
+                error: error.toString()
+            })
+            // For details of error codes, see the docs
+            // The message contains the default Firebase string
+            // representation of the error
+            });
+        }
+    }
+
     render(){
         const { navigate } = this.props.navigation;
         return (
-            <View style={{flex: 1}}>
-                <ScrollView style={styles.scrollContainer}>
-                    <View style={styles.imageContainer}>
-                        <SmallerLightTitleText style={styles.title}>
-                           Log in
-                        </SmallerLightTitleText>
+            <View style={styles.container}>
+                <View style={styles.form}>
+                    <View>
+                        <Text style={styles.labels}>Email</Text>
+                        <TextInput 
+                            style={styles.TextField}
+                            selectionColor={"#F06449"}
+                            underlineColorAndroid={"white"}
+                            onChangeText={value => {
+                                this.setState({
+                                    email: value.trim()
+                                })
+                            }}
+                            onBlur={() => {
+                                this.setState({
+                                emailError: validate('email', this.state.email)
+                                })
+                            }}
+                            error={this.state.emailError}/>
+                        <Text style={styles.validation}>{this.state.emailError}</Text>
                     </View>
-                    <View style={styles.container}>
-                        <TouchableOpacity onPress={() => navigate('Registration')}>
-                            <Button buttonText="Registration"/>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => this.loggedIn()}>
-                            <Button buttonText="Logged in"/>
-                        </TouchableOpacity>
+                    <View>
+                        <Text style={styles.labels}>Password</Text>
+                        <TextInput 
+                            style={styles.TextField}
+                            selectionColor={"#F06449"}
+                            underlineColorAndroid={"white"}
+                            secureTextEntry={true}
+                            onChangeText={value => {
+                                this.setState({
+                                    password: value.trim(),
+                                    passwordError: validate('password', this.state.password)
+                                })
+                            }}
+                            onBlur={() => {
+                                this.setState({
+                                passwordError: validate('password', this.state.password)
+                                })
+                            }}
+                            error={this.state.passwordError}/>
+                        <Text style={styles.validation}>{this.state.passwordError}</Text>
                     </View>
-                </ScrollView>
+
+                        <TouchableOpacity onPress={() => {this.onLogin()}}>
+                            <Button buttonText="Sign in"/>
+                        </TouchableOpacity>
+                        <View>
+                            <Text style={styles.warning}>{this.state.error}</Text>
+                        </View>
+                        <View>
+                            <TouchableOpacity onPress={() => navigate('Registration')}>
+                                <Text style={styles.register}>Don't have an account? Register.</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={() => navigate('HomeNoLogin')}>
+                                <Text style={styles.register}>Use the app without an account.</Text>
+                            </TouchableOpacity>
+                        </View>
+
+                </View>
             </View>
         )
     }
 }
 
+
 const styles = StyleSheet.create({
-    progressContainer: {
-            flex: 1,
-            flexDirection: 'row',
-            flexWrap: 'wrap',
-            padding: 25,
-            backgroundColor: '#f7f7f7'
-    },
-    scrollContainer: {
-        flex: 1,
-        backgroundColor: 'white',
-    },
     container: {
         flex: 1,
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        padding: 25,
+        padding: 50, 
+        backgroundColor: "#55d3c8",
     },
-    imageContainer: {
-        flex: 1,
-        top: 0,
-        alignItems: 'stretch',
-        justifyContent: 'flex-end',
-        backgroundColor: '#55d3c8',
-        paddingTop: 120,
-        height: Dimensions.get('window').height / 6
+    labels: {
+        color: 'white',
+        fontSize: 18
     },
-    pageUp: {
-        flex: 1,
-        margin: 0,
-        padding: 0,
-        top: 0,
-        alignItems: 'center',
-        justifyContent:'center',
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height / 2,
-        resizeMode: 'cover'
-    }
-});
-
-const skills = StyleSheet.create({
-    levelWrapper: {
-        flexDirection: 'column',
+    form: {
+        marginTop: 40
     },
-    grid: {
-        flexWrap: 'wrap',
-        flexDirection: 'row',
+    TextField: {
+        color: 'white',
+        fontSize: 17
     },
-    icon: {
-        marginTop: 10,
-        width: 50,
-        height: 50,
+    validation: {
+        color: 'white',
+        fontSize: 16,
+        paddingTop: 10,
+        paddingBottom: 25,
+        fontWeight: '700',
     },
-    levelTitle: {
-        fontSize: 20,
-        fontWeight: 'bold',
-        paddingBottom: 5,
+    register: {
+        textAlign: 'center',
+        color: 'white',
         paddingTop: 10,
     },
-    levelDescription: {
-        fontSize: 18,
-        paddingBottom: 30,
-    },
-    skill: {
-        flexGrow: 1,
-        height: Dimensions.get('window').width / 3,
-        // width: Dimensions.get('window').width / 2 - 100,
-        borderRadius: 5,
-        margin: 10,
-        marginLeft: 0,
-        marginTop: 0,
-        backgroundColor: '#f7f7f7',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    skillTitle: {
-        fontWeight: 'bold',
-        fontSize: 18,
-        paddingLeft: 10,
-        paddingRight: 10,
+    warning: {
+        textAlign: 'center',
+        color:  '#F06449',
+        paddingBottom: 15
     }
-})
+});

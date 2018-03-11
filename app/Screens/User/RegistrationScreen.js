@@ -48,10 +48,44 @@ export class RegistrationScreen extends Component {
           emailError: emailError,
           passwordError: passwordError
         })
+
+        console.log(emailError)
+        console.log(passwordError)
     
-        if (!emailError && !passwordError) {
-          alert('Details are valid!')
+        if (emailError == null && passwordError== null) {
+
+            console.log(this.state.email)
+            console.log(this.state.password)
+
+            firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+            .then((user) => {
+                // If you need to do anything with the user, do it here
+                // The user will be logged in automatically by the
+                // `onAuthStateChanged` listener we set up in App.js earlier
+            })
+            .catch((error) => {
+                const { code, message } = error;
+                // For details of error codes, see the docs
+                // The message contains the default Firebase string
+                // representation of the error
+            });
         }
+    }
+
+    onRegister = () => {
+        const { email, password } = this.state;
+        firebase.auth().createUserWithEmailAndPassword(email, password)
+        .then((user) => {
+            // If you need to do anything with the user, do it here
+            // The user will be logged in automatically by the
+            // `onAuthStateChanged` listener we set up in App.js earlier
+        })
+        .catch((error) => {
+            const { code, message } = error;
+            // For details of error codes, see the docs
+            // The message contains the default Firebase string
+            // representation of the error
+        });
     }
 
     render(){
@@ -101,7 +135,7 @@ export class RegistrationScreen extends Component {
                     </View>
 
                         <TouchableOpacity onPress={() => {this.register()}}>
-                            <Button buttonText="Register"/>
+                            <Button buttonText="Sign up"/>
                         </TouchableOpacity>
 
                 </View>
@@ -128,9 +162,10 @@ const styles = StyleSheet.create({
         fontSize: 17
     },
     validation: {
-        color: '#ff6b6b',
+        color: 'white',
         fontSize: 16,
         paddingTop: 10,
-        paddingBottom: 25
+        paddingBottom: 25,
+        fontWeight: '700',
     }
 });

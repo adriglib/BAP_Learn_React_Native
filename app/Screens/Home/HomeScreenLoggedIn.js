@@ -6,14 +6,30 @@ import BigBoldTitleText from '../../Components/Text/BigBoldTitleText';
 import BigLightTitleText from '../../Components/Text/BigLightTitleText';
 import App from '../../Components/General/App';
 
+import firebase from 'react-native-firebase';
+
 export class HomeScreenLoggedIn extends Component {
     
 //                    <View style={styles.imageContainer}>
 //                        <Image style={styles.homeUp} source={require('../../../img/home_down.png')}/>
 //                    </View>
 
+    constructor(props){  
+        super(props)
+        const { navigate } = this.props.navigation;
+    }
+
+    logout = async () => {
+        try {
+            await firebase.auth().signOut();
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
     render(){
         const { navigate } = this.props.navigation;
+        console.log(firebase.auth().currentUser)
         return (
             <View style={{flex: 1}}>
                 {/*<Text onPress={() => navigate('Profile')}>*/}
@@ -41,7 +57,7 @@ export class HomeScreenLoggedIn extends Component {
                         <TouchableOpacity onPress={() => navigate('')}>
                             <Button buttonText="Settings"/>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigate('LogIn')}>
+                        <TouchableOpacity onPress={() => {this.logout()}}>
                             <Button buttonText="Sign out"/>
                         </TouchableOpacity>
                     </View>
