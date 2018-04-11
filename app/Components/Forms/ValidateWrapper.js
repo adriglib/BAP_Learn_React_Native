@@ -19,8 +19,19 @@ export default function validate(fieldName, value) {
             minimum: 5,
             message: '^Your password must be at least 5 characters'
           }
-        }
+        },
+
+        username: {
+          presence: {
+            message: '^Please enter a username or name'
+          },
+          length: {
+            minimum: 1,
+            message: '^You have to fill in a username or name'
+          }
+        },
       }
+      
 
     var formValues = {}
     formValues[fieldName] = value

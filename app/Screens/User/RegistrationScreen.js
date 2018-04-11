@@ -9,6 +9,7 @@ import {StyleSheet,
         SectionList, 
         TouchableOpacity, 
         Linking,
+        AsyncStorage,
         TextInput  } from 'react-native';
 
 import App from '../../Components/General/App';
@@ -34,31 +35,52 @@ export class RegistrationScreen extends Component {
             email: '',
             emailError: '',
             password: '',
-            passwordError: ''
+            passwordError: '',
+            username: '',
+            usernameError: ''
         }
     }
 
     register() {
         console.log(this.state.email)
         console.log(this.state.password)
+        console.log(this.state.username)
         const emailError = validate('email', this.state.email)
         const passwordError = validate('password', this.state.password)
+        const usernameError = validate('username', this.state.username)
     
         this.setState({
           emailError: emailError,
-          passwordError: passwordError
+          passwordError: passwordError,
+          usernameError: usernameError
         })
 
         console.log(emailError)
         console.log(passwordError)
+        console.log(usernameError)
     
-        if (emailError == null && passwordError== null) {
+        if (emailError == null && passwordError== null && usernameError == null) {
 
             console.log(this.state.email)
             console.log(this.state.password)
+            console.log(this.state.username)
 
-            firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-            .then((user) => {
+            firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password, this.state.username)
+            .then(async (user) => {
+                firebase.database().ref('Users/' + user._user.uid).set({
+                    email: user._user.email,
+                    username: this.state.username,
+                    latestQuizNr: 0,
+                    experience: 0,
+                    trophies: '',
+                  });
+                  this.itemsRef = firebase.database().ref('Users/' + user._user.uid);
+                  let database = this.itemsRef.once('value');
+                  database.then(items => {
+                      console.log(items._value.experience)
+                      AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(items));
+                  });
+
                 // If you need to do anything with the user, do it here
                 // The user will be logged in automatically by the
                 // `onAuthStateChanged` listener we set up in App.js earlier
@@ -72,27 +94,31 @@ export class RegistrationScreen extends Component {
         }
     }
 
-    onRegister = () => {
-        const { email, password } = this.state;
-        firebase.auth().createUserWithEmailAndPassword(email, password)
-        .then((user) => {
-            // If you need to do anything with the user, do it here
-            // The user will be logged in automatically by the
-            // `onAuthStateChanged` listener we set up in App.js earlier
-        })
-        .catch((error) => {
-            const { code, message } = error;
-            // For details of error codes, see the docs
-            // The message contains the default Firebase string
-            // representation of the error
-        });
-    }
 
     render(){
 
         return (
             <View style={styles.container}>
                 <View style={styles.form}>
+                    <View>
+                        <Text style={styles.labels}>Name or username</Text>
+                        <TextInput 
+                            style={styles.TextField}
+                            selectionColor={"#F06449"}
+                            underlineColorAndroid={"white"}
+                            onChangeText={value => {
+                                this.setState({
+                                    username: value
+                                })
+                            }}
+                            onBlur={() => {
+                                this.setState({
+                                usernameError: validate('username', this.state.username)
+                                })
+                            }}
+                            error={this.state.usernameError}/>
+                        <Text style={styles.validation}>{this.state.usernameError}</Text>
+                    </View>
                     <View>
                         <Text style={styles.labels}>Email</Text>
                         <TextInput 
@@ -155,7 +181,7 @@ const styles = StyleSheet.create({
         fontSize: 18
     },
     form: {
-        marginTop: 100
+        marginTop: 50
     },
     TextField: {
         color: 'white',

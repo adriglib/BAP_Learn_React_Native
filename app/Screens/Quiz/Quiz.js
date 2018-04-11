@@ -8,130 +8,23 @@ import {
     StyleSheet,
     Text,
     View,
-    Button,
     Dimensions,
     ScrollView,
-    TouchableOpacity
+    TouchableOpacity,
+    TouchableHighlight,
+    Modal,
+    AsyncStorage
 } from 'react-native';
 
 import SmallerLightTitleText from '../../Components/Text/SmallerLightTitleText';
+import BigLightTitleText from '../../Components/Text/BigLightTitleText';
 import Animbutton from '../../Components/Buttons/AnimatedButton';
 import firebase from 'react-native-firebase';
-
+import Button from '../../Components/Buttons/SquareLargeButton';
 
 let newArray = []
 let currentQuiz = {}
 let nav;
-
-// const quizData = {
-//     "quiz": {
-//         "1": {
-//             "question1": {
-//                 "correctOption": "3",
-//                 "quizOptions": {
-//                     "1": "Java",
-//                     "2": "PHP",
-//                     "3": "Javascript",
-//                     "4": "IOS"
-//                 },
-//                 "question": "React is a ____ library"
-//             },
-//             "question2": {
-//                 "correctOption": "4",
-//                 "quizOptions": {
-//                     "1": "XML",
-//                     "2": "YML",
-//                     "3": "HTML",
-//                     "4": "JSX"
-//                 },
-//                 "question": "____ tag syntax is used in React"
-//             },
-//             "question3": {
-//                 "correctOption": "1",
-//                 "quizOptions": {
-//                     "1": "Single root DOM node",
-//                     "2": "Double root DOM node",
-//                     "3": "Multiple root DOM node",
-//                     "4": "None of the above"
-//                 },
-//                 "question": "Application built with just React usually have ____"
-//             },
-//             "question4": {
-//                 "correctOption": "2",
-//                 "quizOptions": {
-//                     "1": "mutable",
-//                     "2": "immutable",
-//                     "3": "variable",
-//                     "4": "none of the above"
-//                 },
-//                 "question": "React elements are ____"
-//             },
-//             "question5": {
-//                 "correctOption": "3",
-//                 "quizOptions": {
-//                     "1": "functions",
-//                     "2": "array",
-//                     "3": "components",
-//                     "4": "json data"
-//                 },
-//                 "question": "React allows to split UI into independent and reusable pieses of ____"
-//             }
-//         },
-//         "2": {
-//             "question1": {
-//                 "correctOption": "3",
-//                 "quizOptions": {
-//                     "1": "Javkzeha",
-//                     "2": "PHljdP",
-//                     "3": "Javlkscascript",
-//                     "4": "IOS"
-//                 },
-//                 "question": "Reactlkqd is a ____ library"
-//             },
-//             "question2": {
-//                 "correctOption": "4",
-//                 "quizOptions": {
-//                     "1": "XML",
-//                     "2": "YML",
-//                     "3": "HTML",
-//                     "4": "JSX"
-//                 },
-//                 "question": "____ tag syntax is used in React"
-//             },
-//             "question3": {
-//                 "correctOption": "1",
-//                 "quizOptions": {
-//                     "1": "Single root DOM node",
-//                     "2": "Double root DOM node",
-//                     "3": "Multiple root DOM node",
-//                     "4": "None of the above"
-//                 },
-//                 "question": "Application built with just React usually have ____"
-//             },
-//             "question4": {
-//                 "correctOption": "2",
-//                 "quizOptions": {
-//                     "1": "mutable",
-//                     "2": "immutable",
-//                     "3": "variable",
-//                     "4": "none of the above"
-//                 },
-//                 "question": "React elements are ____"
-//             },
-//             "question5": {
-//                 "correctOption": "3",
-//                 "quizOptions": {
-//                     "1": "functions",
-//                     "2": "array",
-//                     "3": "components",
-//                     "4": "json data"
-//                 },
-//                 "question": "React allows to split UI into independent and reusable pieses of ____"
-//             }
-//         }
-//     }
-// }
-
 
 export class Quiz extends Component {
 
@@ -155,48 +48,73 @@ export class Quiz extends Component {
 
         this.state = {
             question: 'Loading...',
-            quizOptions: {1: 'Loading...', 2: 'Loading...', 3: 'Loading...', 4: 'Loading...'},
+            quizOptions: {0: 'Loading...', 1: 'Loading...', 2: 'Loading...', 3: 'Loading...'},
             correctOption: 'Loading',
             countCheck: 0,
             correct: 0,
+            succesStatus: true,
+            bgColor:  {0: '#e6e6e6', 1: '#e6e6e6', 2: '#e6e6e6', 3: '#e6e6e6'},
+            disabledButtons: false,
+            modalVisible: false,
+            modalText: '',
+            experience: nav.state.params.experience,
+            showNextButton: false,
         }
-
-        // console.log(nav.state.params.quizNr)
-
-        // const currentQuiz = quizData.quiz[nav.state.params.quizNr]
-        // newArray = Object.keys(currentQuiz).map(function (i) {
-        //     return currentQuiz[i]
-        // });
-        
-        // this.state = {
-        //     question: newArray[this.questionNumber].question,
-        //     quizOptions: newArray[this.questionNumber].quizOptions,
-        //     correctOption: newArray[this.questionNumber].correctOption,
-        //     countCheck: 0,
-        //     correct: null,
-        // }
     }
 
     componentDidMount() {
         let database = this.itemsRef.once('value');
         database.then(items => {
             quizData = items._value;
-            console.log(quizData)
-            console.log(nav.state.params.quizNr)
+            // console.log(quizData)
+            // console.log(nav.state.params.quizNr)
             // currentQuiz = quizData['question' + nav.state.params.quizNr]
             // console.log(currentQuiz);
             newArray = quizData;
 
-            console.log(newArray['question' + this.questionNumber])
+            // console.log(newArray['question' + this.questionNumber])
 
             this.setState({
                 question: newArray['question' + this.questionNumber].question,
                 quizOptions: newArray['question' + this.questionNumber].quizOptions,
                 correctOption: newArray['question' + this.questionNumber].correctOption,
-                countCheck: 0,
-                correct: 0,
             });
         });
+    }
+
+    openModal(visible, succeeded) {
+        this.setState({
+            modalVisible: visible,
+        });
+
+        if(succeeded){
+            const experience = this.state.experience + 5;
+            this.setState({
+                modalText: 'You have passed this course and earned 5XP!',
+            });
+                AsyncStorage.getItem('@MySuperStore:user').then((values) => {
+                    const value = JSON.parse(values);
+                    const newExperience = parseInt(value.experience) + 5; 
+                    if(newExperience < 10){
+                        value["experience"] = '0' + newExperience.toString();
+                    } else {
+                        value["experience"] = newExperience.toString();
+                    }
+                                     
+                    this.setState({
+                          experience: newExperience,
+                      })
+
+                    AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(value));
+                    
+                    const loggedInUser = firebase.auth().currentUser;
+                    firebase.database().ref('Users/' + loggedInUser._user.uid + '/experience').set(newExperience);
+                } )
+        }else{
+            this.setState({
+                modalText: 'You have not passed this course and have not earned any XP.'
+            });
+        }
     }
 
     prev() {
@@ -205,7 +123,9 @@ export class Quiz extends Component {
                 this.setState({
                     question: newArray['question' + this.questionNumber].question,
                     quizOptions: newArray['question' + this.questionNumber].quizOptions,
-                    correctOption: newArray['question' + this.questionNumber].correctOption
+                    correctOption: newArray['question' + this.questionNumber].correctOption,
+                    bgColor:  {0: '#e6e6e6', 1: '#e6e6e6', 2: '#e6e6e6', 3: '#e6e6e6'},
+                     disabledButtons: false,
                 })
         }
     }
@@ -215,13 +135,22 @@ export class Quiz extends Component {
         if (this.questionNumber < Object.keys(quizData).length) {
             this.questionNumber++
                 this.setState({
-                    countCheck: 0,
                     question: newArray['question' + this.questionNumber].question,
                     quizOptions: newArray['question' + this.questionNumber].quizOptions,
-                    correctOption: newArray['question' + this.questionNumber].correctOption
+                    correctOption: newArray['question' + this.questionNumber].correctOption,
+                    bgColor:  {0: '#e6e6e6', 1: '#e6e6e6', 2: '#e6e6e6', 3: '#e6e6e6'},
+                    disabledButtons: false,           
+                    showNextButton: false,
                 })
         } else {
-alert('no questions')
+// Check here if everything right or wrong, if wrong go to a screen that recaps 
+            if(this.state.succesStatus == false){
+                this.openModal(true, false);
+            }
+            else {
+                this.openModal(true, true);
+            }
+        
 //            this.props.quizFinish(this.score * 100 / 5)
         }
     }
@@ -238,35 +167,51 @@ alert('no questions')
       }
 
     _answer(status, ans) {
-
+        this.setState({
+            disabledButtons: true,
+            showNextButton: true,
+        })
         if (status == true) {
             
-            const count = this.state.countCheck + 1
+            const count = this.state.countCheck + 1;
+            console.log(count)
             
             this.setState({
                 countCheck: count
             })
             
             this.replaceText();
+            const bgColors = this.state.bgColor;
             
             if (ans == this.state.correctOption) {
                 this.score += 1
-                                
-                this.setState({correct: true, status: false}, function () {
+                
+                bgColors[this.state.correctOption] = '#55d3c8';
+
+                this.setState({
+                    correct: true, 
+                    status: false}, 
+                    function () {
                     // console.log(this.state.correct)
-                    setTimeout(() => {
-                      this.next();
-                    }, 3000);
+                    // setTimeout(() => {
+                    //   this.next();
+                    // }, 3000);
                 });
                 
                 
             }
             else {
-                this.setState({correct: false, status: false}, function () {
+                bgColors[ans] = '#d35572';
+                bgColors[this.state.correctOption] = '#55d3c8';
+                this.setState(
+                    {correct: false, 
+                     status: false,
+                     succesStatus: false,
+                    }, function () {
                     // console.log(this.state.correct)
-                    setTimeout(() => {
-                      this.next();
-                    }, 5000);
+                    // setTimeout(() => {
+                    //   this.next();
+                    // }, 5000);
                 });
             }
         } else {
@@ -281,6 +226,8 @@ alert('no questions')
         }
 
     }
+
+
   render() {
     let _this = this
     const currentOptions = this.state.quizOptions
@@ -290,18 +237,73 @@ alert('no questions')
     const quizOptions = Object.keys(currentOptions).map( function(i) {
       return (  
           <View key={i}>
-            <Animbutton countCheck={_this.state.countCheck} correct={_this.state.correct} effect={"tada"} _onPress={(status) => _this._answer(status,i)} text={currentOptions[i]} />
+            <Animbutton disabled={_this.state.disabledButtons} backgroundColor={_this.state.bgColor[i]} countCheck={_this.state.countCheck} correct={_this.state.correct} effect={"rubberband"} _onPress={(status) => _this._answer(status,i)} text={currentOptions[i]} />
           </View>
                                                    )
     });
 
+    function renderIf(condition, content) {
+        if (condition) {
+            return content;
+        } else {
+            return null;
+        }
+    }
+
     return (
             <View style={{flex: 1}}>
                 <ScrollView style={styles.scrollContainer}>
+
+                    <Modal
+                    animationType="slide"
+                    transparent={false}
+                    hardwareAccelerated={true}
+                    visible={this.state.modalVisible}
+                    onRequestClose={() => {
+                        this.props.navigation.navigate('Levels');
+                    }}>
+                        <View style={modal.container}>
+                            <View>
+                                <Text style={modal.text}>{this.state.modalText}</Text>
+                            </View>
+                            <View>
+                                <TouchableOpacity  onPress={() => {
+                                    this.openModal(!this.state.modalVisible);
+                                    this.questionNumber = 1;
+                                    this.setState({
+                                        question: newArray['question1'].question,
+                                        quizOptions: newArray['question1'].quizOptions,
+                                        correctOption: newArray['question1'].correctOption,
+                                        bgColor:  {0: '#e6e6e6', 1: '#e6e6e6', 2: '#e6e6e6', 3: '#e6e6e6'},
+                                        disabledButtons: false,
+                                    });
+                                    }}>
+                                <Button buttonText="Retry"/>
+                                </TouchableOpacity>
+                                <TouchableOpacity  onPress={() => {
+                                    this.openModal(!this.state.modalVisible);
+                                    this.props.navigation.navigate('Levels', { getXP: true });
+                                    }}>
+                                <Button buttonText="Close"/>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </Modal>
+
                     <View style={styles.imageContainer}>
                         <SmallerLightTitleText>
                             {this.state.question}
                         </SmallerLightTitleText>
+                        <View style={styles.prevNextButtonsContainer}>
+                            <Text style={[styles.prevNextButton, styles.prevNextButtonText]}>
+                                    {this.state.experience} XP
+                            </Text>
+                            {renderIf(this.state.showNextButton, 
+                            <TouchableOpacity style={styles.prevNextButton} onPress={() => this.next()}>
+                                <Text style={styles.prevNextButtonText}>Next</Text>
+                             </TouchableOpacity>
+                            )}
+                        </View>
                     </View>
                     <View style={styles.pageUp}/>
                     <View style={styles.container}>
@@ -314,9 +316,26 @@ alert('no questions')
 }
 
 const styles = StyleSheet.create({
+    prevNextButtonsContainer: {
+        // backgroundColor: 'red',
+        height: Dimensions.get('window').height / 2.5,
+        flexDirection: 'row',
+        alignItems: 'flex-end',
+        justifyContent: 'space-between',
+    },
+    prevNextButton: {
+        padding: 10,
+        // backgroundColor: '#F06449',
+        borderRadius: 5,
+        margin: 5
+    },
+    prevNextButtonText: {
+        color: 'white'
+    },
     scrollContainer: {
         flex: 1,
         backgroundColor: 'white',
+        width: Dimensions.get('window').width,
     },
     container: {
         flex: 1,
@@ -350,5 +369,21 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent:'center',
         backgroundColor: 'yellow',
+    }
+});
+
+const modal = StyleSheet.create({
+    container: {
+        flex: 1,
+        padding: 25,
+        backgroundColor: '#55d3c8',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    text: {
+        fontSize: 30,
+        textAlign: 'left',
+        fontFamily: "ArticulatCF-Light",
+        color: 'white',
     }
 });

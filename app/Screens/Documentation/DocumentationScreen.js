@@ -53,6 +53,8 @@ const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
         backgroundColor: 'white',
+        width: Dimensions.get('window').width,
+        marginTop: 25,
     },
     container: {
         flex: 1,

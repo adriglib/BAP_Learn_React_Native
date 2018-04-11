@@ -8,9 +8,11 @@ import {StyleSheet,
         Dimensions, 
         SectionList, 
         TouchableOpacity, 
+        AsyncStorage,
         Linking } from 'react-native';
 import SmallerLightTitleText from '../../Components/Text/SmallerLightTitleText';
 import TableOfContents from '../../Components/Tables/TableOfContents';
+import ProgressBar from '../../Components/Progress/ProgressBar';
 import App from '../../Components/General/App';
 import firebase from 'react-native-firebase';
 
@@ -24,9 +26,231 @@ export class Levels extends Component {
     
     constructor(props) {
         super(props);
+        this.state = {
+            experience: '0'
+        }
     }
 
+    // componentDidMount(){
+    //     this.getUserInfo();
+    // }
+
+    componentWillMount(){
+        this.getUserInfo();
+    }
+
+    async getUserInfo() {
+
+        
+        try {
+            const value = await AsyncStorage.getItem('@MySuperStore:user');
+            if (value !== null){
+              let userInfo = JSON.parse(value);
+              this.setState({
+                  experience: userInfo.experience,
+                  username: userInfo.username
+              })
+            }
+          } catch (error) {
+              console.log(error);
+            // Error retrieving data
+          }
+    }
+
+
     render(){
+        const levelWrapper = {
+            1: {
+                title: 'Level 1',
+                description: 'An introduction of the pure basics of React Native',
+                skills: {
+                    a: {
+                        quizNr: 1,
+                        title: 'Environment',
+                        finished: false,
+                        imgUrl: require('../../../icons/apple.png')
+                    },
+                    b: {
+                        quizNr: 2,
+                        title: 'Components',
+                        finished: false,
+                        imgUrl: require('../../../icons/blackboard.png')
+                    },
+                    c: {
+                        quizNr: 3,
+                        title: 'State',
+                        finished: false,
+                        imgUrl: require('../../../icons/mortarboard.png')
+                    },
+                    d: {
+                        quizNr: 4,
+                        title: 'Recap Level 1',
+                        finished: false,
+                        imgUrl: require('../../../icons/diploma.png')
+                    }
+                }
+            },
+            2: {
+                title: 'Level 2',
+                description: 'Components and the Component API',
+                skills: {
+                    a: {
+                        quizNr: 5,
+                        title: 'Components',
+                        finished: false,
+                        imgUrl: require('../../../icons/open-book.png')
+                    },
+                    b: {
+                        quizNr: 6,
+                        title: 'State',
+                        finished: false,
+                        imgUrl: require('../../../icons/physics.png')
+                    },
+                    c: {
+                        quizNr: 7,
+                        title: 'Props',
+                        finished: false,
+                        imgUrl: require('../../../icons/computer-mouse.png')
+                    },
+                    d: {
+                        quizNr: 8,
+                        title: 'Recap Level 2',
+                        finished: false,
+                        imgUrl: require('../../../icons/test.png')
+                    }
+                }
+            },
+            3: {
+                title: 'Level 3',
+                description: 'Styling in React Native',
+                skills: {
+                    a: {
+                        quizNr: 9,
+                        title: 'Stylesheet API',
+                        finished: false,
+                        imgUrl: require('../../../icons/palette.png')
+                    },
+                    b: {
+                        quizNr: 10,
+                        title: 'Flexbox',
+                        finished: false,
+                        imgUrl: require('../../../icons/abacus.png')
+                    },
+                    c: {
+                        quizNr: 11,
+                        title: 'Animations',
+                        finished: false,
+                        imgUrl: require('../../../icons/newtons-cradle.png')
+                    },
+                    d: {
+                        quizNr: 12,
+                        title: 'Recap Level 3',
+                        finished: false,
+                        imgUrl: require('../../../icons/test-tubes.png')
+                    }
+                }
+            },
+            4: {
+                title: 'Level 4',
+                description: 'Navigate in React Native',
+                skills: {
+                    a: {
+                        quizNr: 13,
+                        title: 'React Navigation',
+                        finished: false,
+                        imgUrl: require('../../../icons/earth-globe.png')
+                    },
+                    b: {
+                        quizNr: 14,
+                        title: 'Stacknavigation',
+                        finished: false,
+                        imgUrl: require('../../../icons/books-1.png')
+                    },
+                    c: {
+                        quizNr: 15,
+                        title: 'Tabnavigation',
+                        finished: false,
+                        imgUrl: require('../../../icons/bookshelf.png')
+                    },
+                    d: {
+                        quizNr: 16,
+                        title: 'Drawernavigation',
+                        finished: false,
+                        imgUrl: require('../../../icons/briefcase.png')
+                    },
+                    e: {
+                        quizNr: 17,
+                        title: 'Recap Level 4',
+                        finished: false,
+                        imgUrl: require('../../../icons/school-bus.png')
+                    }
+                }
+            },
+            5: {
+                title: 'Level 5',
+                description: 'Let\'s do a final test',
+                skills: {
+                    a: {
+                        quizNr: 18,
+                        title: 'Components',
+                        finished: false,
+                        imgUrl: require('../../../icons/diploma-1.png')
+                    },
+                    b: {
+                        quizNr: 19,
+                        title: 'Styling',
+                        finished: false,
+                        imgUrl: require('../../../icons/paint-brush.png')
+                    },
+                    c: {
+                        quizNr: 20,
+                        title: 'Navigation',
+                        finished: false,
+                        imgUrl: require('../../../icons/professor.png')
+                    }
+                }
+            },
+        }
+
+        const {navigate} = this.props.navigation;
+  
+        const _that= this;
+        const levels = 
+        Object.keys(levelWrapper).map( function(key, index) {
+                const experience = parseInt(_that.state.experience);
+            // Object.keys(levelWrapper[key].skills).map( function(e) {
+                return ( 
+                    <View key ={key} style={skills.levelWrapper}>
+                            <Text style={skills.levelTitle}>{levelWrapper[key].title}</Text>
+                            <Text style={skills.levelDescription}>{levelWrapper[key].description}</Text>
+                            <View style={skills.grid}>
+                                {Object.keys(levelWrapper[key].skills).map( function(e) {
+
+                                const completedText = (levelWrapper[key].skills[e].quizNr * 5)<=(experience);
+                                const currentLevelText = (levelWrapper[key].skills[e].quizNr * 5) == (experience + 5);
+                                const isLastLevel = false;
+                                     
+                                return ( 
+                                        <TouchableOpacity key={e}
+                                        disabled={(levelWrapper[key].skills[e].quizNr * 5)>(experience + 5)?true:false}
+                                        style={(levelWrapper[key].skills[e].quizNr * 5)>(experience + 5)?skills.disabledSkill:skills.skill} onPress={() => navigate('Quiz', {quizNr: levelWrapper[key].skills[e].quizNr, experience: experience, } )}>
+                                            <Text style={(levelWrapper[key].skills[e].quizNr * 5)>(experience + 5)?skills.disabledSkillTitle:skills.skillTitle}>{levelWrapper[key].skills[e].title}</Text>    
+                                            <Image style={skills.icon} source={levelWrapper[key].skills[e].imgUrl}/>
+                                            <View style={skills.checkMarkContainer}>
+                                                 {completedText ? 
+                                                    <Text style={skills.skillLevel}>✔</Text>
+                                                    : 
+                                                    currentLevelText ? <Text style={skills.skillLevel}>🕑</Text> : <Text></Text>
+                                                    }
+                                            </View>
+                                        </TouchableOpacity>
+                                 )
+                                })}
+                            </View>
+                    </View>
+                )
+            // });
+        });
         return (
             <View style={{flex: 1}}>
                 <ScrollView style={styles.scrollContainer}>
@@ -36,139 +260,10 @@ export class Levels extends Component {
                         </SmallerLightTitleText>
                     </View>
                     <View style={styles.progressContainer}>
-                        <Text>Your progress: 80XP</Text>
+                        <ProgressBar username={this.state.username} xp={this.state.experience} progress={this.state.experience}/>
                     </View>
                     <View style={styles.container}>
-                        <View style={skills.levelWrapper}>
-                            <Text style={skills.levelTitle}>Level 1</Text>
-                            <Text style={skills.levelDescription}>An introduction of the pure basics of React Native</Text>
-                            <View style={skills.grid}>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 1} )}>
-                                    <Text style={skills.skillTitle}>Environment</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/apple.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 2})}>
-                                    <Text style={skills.skillTitle}>Components</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/blackboard.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 3})}>
-                                    <Text style={skills.skillTitle}>State</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/mortarboard.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 4})}>
-                                    <Text style={skills.skillTitle}>Recap Level 1</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/diploma.png')}/>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style={skills.levelWrapper}>
-                            <Text style={skills.levelTitle}>Level 2</Text>
-                            <Text style={skills.levelDescription}>Components and the Component API</Text>
-                            <View style={skills.grid}>
-                                <TouchableOpacity style={skills.skill}  onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 5})}>
-                                    <Text style={skills.skillTitle}>Components</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/open-book.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 6})}>
-                                    <Text style={skills.skillTitle}>State</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/physics.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 7})}>
-                                    <Text style={skills.skillTitle}>Props</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/computer-mouse.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 8})}>
-                                    <Text style={skills.skillTitle}>Recap Level 2</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/test.png')}/>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style={skills.levelWrapper}>
-                            <Text style={skills.levelTitle}>Level 3</Text>
-                            <Text style={skills.levelDescription}>Styling in React Native</Text>
-                            <View style={skills.grid}>
-                                <TouchableOpacity style={skills.skill}  onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 9})}>
-                                    <Text style={skills.skillTitle}>Stylesheet API</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/palette.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 10})}>
-                                    <Text style={skills.skillTitle}>Flexbox</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/abacus.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 11})}>
-                                    <Text style={skills.skillTitle}>Animations</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/newtons-cradle.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 12})}>
-                                    <Text style={skills.skillTitle}>Recap Level 3</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/test-tubes.png')}/>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style={skills.levelWrapper}>
-                            <Text style={skills.levelTitle}>Level 4</Text>
-                            <Text style={skills.levelDescription}>Navigate in React Native</Text>
-                            <View style={skills.grid}>
-                                <TouchableOpacity style={skills.skill}  onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 13})}>
-                                    <Text style={skills.skillTitle}>React Navigation</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/earth-globe.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 14})}>
-                                    <Text style={skills.skillTitle}>Stacknavigation</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/books-1.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 15})}>
-                                    <Text style={skills.skillTitle}>Tabnavigation</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/bookshelf.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 16})}>
-                                    <Text style={skills.skillTitle}>Drawernavigation</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/briefcase.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 17})}>
-                                    <Text style={skills.skillTitle}>Recap Level 4</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/school-bus.png')}/>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-                        <View style={skills.levelWrapper}>
-                            <Text style={skills.levelTitle}>Level 5</Text>
-                            <Text style={skills.levelDescription}>Let's do a final test</Text>
-                            <View style={skills.grid}>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 18})}>
-                                    <Text style={skills.skillTitle}>Components</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/diploma-1.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 19})}>
-                                    <Text style={skills.skillTitle}>Styling</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/paint-brush.png')}/>
-                                </TouchableOpacity>
-                                <TouchableOpacity style={skills.skill} onPress={() => this.props.navigation.navigate('Quiz', {quizNr: 20})}>
-                                    <Text style={skills.skillTitle}>Navigation</Text>    
-                                    {/* <Text style={skills.skillLevel}>Done</Text>     */}
-                                    <Image style={skills.icon} source={require('../../../icons/professor.png')}/>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
+                        {levels}
                     </View>
                 </ScrollView>
             </View>
@@ -247,7 +342,7 @@ const skills = StyleSheet.create({
         margin: 10,
         marginLeft: 0,
         marginTop: 0,
-        backgroundColor: '#f7f7f7',
+        // backgroundColor: '#f7f7f7',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -256,5 +351,34 @@ const skills = StyleSheet.create({
         fontSize: 18,
         paddingLeft: 10,
         paddingRight: 10,
+        paddingTop:5,
+    },
+    disabledSkill: {
+        flexGrow: 1,
+        height: Dimensions.get('window').width / 3,
+        borderRadius: 5,
+        margin: 10,
+        marginLeft: 0,
+        marginTop: 0,
+        backgroundColor: '#f7f7f7',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    disabledSkillTitle: {
+        fontWeight: 'bold',
+        fontSize: 18,
+        paddingLeft: 10,
+        paddingRight: 10,
+        paddingTop:5,
+    },
+    checkMarkContainer:{
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        flex: 1,
+    },
+    skillLevel:{
+        fontSize: 20,   
+        
+        paddingTop:5    
     }
 })

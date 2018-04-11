@@ -16,6 +16,7 @@ export default class Animbutton extends Component {
    }
    _onPress(){
      this.props._onPress(!this.state.status)
+     console.log(!this.state.status)
      this.setState({ status: !this.state.status})
      switch (this.props.effect) {
        case 'bounce':
@@ -57,9 +58,10 @@ export default class Animbutton extends Component {
     // console.log('Button; ' + this.props.correct);   
       
     return (
-      <TouchableWithoutFeedback onPress={() => this._onPress()}>
-        <Animatable.View ref="view" disabled={true} style={[styles.button, [(this.props.correct != null) ? [(this.props.correct) ? styles.greenBackground : styles.redBackground] : styles.greyBackground]]}>
-          <Text style={[styles.buttonText, {color: status ? "white" : "#696969", fontWeight: "bold"}]}>{this.props.text}</Text>
+      <TouchableWithoutFeedback disabled={this.props.disabled} onPress={() => this._onPress()}>
+      {/* [(this.props.correct != null) ? [(this.props.correct) ? styles.greenBackground : styles.redBackground] : styles.greyBackground] */}
+        <Animatable.View ref="view"  style={[styles.button,  {backgroundColor: this.props.backgroundColor}]}>
+          <Text style={[styles.buttonText, {color: this.props.backgroundColor == '#e6e6e6' ? "#919191" : "white", fontWeight: "bold"}]}>{this.props.text}</Text>
         </Animatable.View>
       </TouchableWithoutFeedback>
     );
@@ -77,17 +79,7 @@ const styles = StyleSheet.create({
     buttonText: {
         fontSize: 16,
     },
-    
-    greyBackground: {
-        backgroundColor: '#e6e6e6',
-    },
-    greenBackground: {
-        backgroundColor: '#55d3c8',
-    },
-    redBackground: {
-        backgroundColor: '#d35572',
-    },
-    
+        
     scrollContainer: {
         flex: 1,
         backgroundColor: 'white',

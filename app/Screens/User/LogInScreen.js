@@ -10,6 +10,7 @@ import {StyleSheet,
         SectionList, 
         TouchableOpacity,
         TextInput, 
+        AsyncStorage,
         Linking } from 'react-native';
 import SmallerLightTitleText from '../../Components/Text/SmallerLightTitleText';
 import TableOfContents from '../../Components/Tables/TableOfContents';
@@ -55,10 +56,16 @@ export class LogInScreen extends Component {
     
         if (emailError == null && passwordError == null) {
             firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
-            .then((user) => {
-            // If you need to do anything with the user, do it here
-            // The user will be logged in automatically by the 
-            // `onAuthStateChanged` listener we set up in App.js earlier
+            .then(async (user) => {
+                this.itemsRef = firebase.database().ref('Users/' + user._user.uid);
+                let database = this.itemsRef.once('value');
+                database.then(items => {
+                    console.log(items._value.experience)
+                    AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(items));
+                });
+                // If you need to do anything with the user, do it here
+                // The user will be logged in automatically by the 
+                // `onAuthStateChanged` listener in App.js
             })
             .catch((error) => {
             const { code, message } = error;
@@ -146,6 +153,7 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 50, 
         backgroundColor: "#55d3c8",
+        width: Dimensions.get('window').width,
     },
     labels: {
         color: 'white',
