@@ -51,7 +51,7 @@ export class HomeScreenLoggedIn extends Component {
                         <TouchableOpacity onPress={() => navigate('Levels')}>
                             <Button buttonText="Play the game"/>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigate('')}>
+                        <TouchableOpacity onPress={() => navigate('Trophies')}>
                             <Button buttonText="Trophies"/>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('')}>

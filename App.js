@@ -9,6 +9,7 @@ import { DocumentationScreen }  from './app/Screens/Documentation/DocumentationS
 import {DocumentationItemScreen} from "./app/Screens/Documentation/DocumentationItemScreen";
 import {Quiz} from "./app/Screens/Quiz/Quiz";
 import {Levels} from "./app/Screens/Quiz/Levels";
+import {Trophies} from "./app/Screens/Trophies/TrophiesScreen";
 import {LogInScreen} from "./app/Screens/User/LogInScreen";
 import {RegistrationScreen} from "./app/Screens/User/RegistrationScreen";
 import { HomeScreenLoggedOut } from './app/Screens/Home/HomeScreenLoggedOut';
@@ -144,6 +145,23 @@ const NavigationApp = StackNavigator({
                 shadowOpacity: 0,
             }}
     },
+    Trophies: {
+        screen: Trophies,
+        navigationOptions: {
+            // header: null,
+
+            headerTintColor: 'white',
+            headerStyle: {
+                backgroundColor: '#55d3c8',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                borderBottomWidth: 0, // removes the border on the bottom
+                elevation: 0,       //remove shadow on Android
+                shadowOpacity: 0,
+            }}
+    },
 });
 
 
@@ -151,7 +169,25 @@ export default class MyFirstApp extends Component {
     constructor() {
         super();
     }
-    
+
+    // componentDidMount() {
+    //     firebase.messaging().hasPermission()
+    //     .then(enabled => {
+    //         if (enabled) {
+    //         // user has permissions
+
+    //         } else {
+    //         // user doesn't have permission
+    //         firebase.messaging().requestPermission()
+    //         .then(() => {
+    //             // User has authorised  
+    //         })
+    //         .catch(error => {
+    //             // User has rejected permissions  
+    //         });
+    //         } 
+    //     });
+    // }  
     
     render() {
         return <NavigationApp />;
