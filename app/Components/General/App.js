@@ -40,10 +40,10 @@ class App extends Component {
         if (this.state.loading) return null;
     
         // The user is an Object, so they're logged in
-        if (this.state.user) return <LoggedIn />;
+        if (this.state.user) return null;
     
         // The user is null, so they're logged out
-        return <LoggedOut />;
+        // return <LoggedOut />;
       }
 
     // render() {

@@ -41,7 +41,7 @@ class TableOfContents extends React.Component {
     }
 
     sectionList () {
-        console.log(this.dataSource)
+        // console.log(this.dataSource)
         return <SectionList
             sections={this.state.dataSource}
             renderItem={({item, index, section}) =>
@@ -63,7 +63,7 @@ class TableOfContents extends React.Component {
     }
 
     render() {
-        // console.log(this.items)
+        // // console.log(this.items)
         // const { navigator } = this.props.navigation;
         return (
         <View style={styles.test}>

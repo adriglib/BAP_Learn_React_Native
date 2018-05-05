@@ -10,9 +10,11 @@ import {DocumentationItemScreen} from "./app/Screens/Documentation/Documentation
 import {Quiz} from "./app/Screens/Quiz/Quiz";
 import {Levels} from "./app/Screens/Quiz/Levels";
 import {Trophies} from "./app/Screens/Trophies/TrophiesScreen";
+import {SettingsScreen} from "./app/Screens/Settings/SettingsScreen";
 import {LogInScreen} from "./app/Screens/User/LogInScreen";
 import {RegistrationScreen} from "./app/Screens/User/RegistrationScreen";
 import { HomeScreenLoggedOut } from './app/Screens/Home/HomeScreenLoggedOut';
+
 
 const NavigationApp = StackNavigator({
     Splash: {
@@ -110,7 +112,23 @@ const NavigationApp = StackNavigator({
                 shadowOpacity: 0,
             }}
     },
-    
+    Levels: {
+        screen: Levels,
+        navigationOptions: {
+            // header: null,
+
+            headerTintColor: 'white',
+            headerStyle: {
+                backgroundColor: '#55d3c8',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                borderBottomWidth: 0, // removes the border on the bottom
+                elevation: 0,       //remove shadow on Android
+                shadowOpacity: 0,
+            }}
+    },    
     Quiz: {
         screen: Quiz,
         navigationOptions: {
@@ -128,8 +146,9 @@ const NavigationApp = StackNavigator({
                 shadowOpacity: 0,
             }}
     },
-    Levels: {
-        screen: Levels,
+
+    Trophies: {
+        screen: Trophies,
         navigationOptions: {
             // header: null,
 
@@ -145,8 +164,9 @@ const NavigationApp = StackNavigator({
                 shadowOpacity: 0,
             }}
     },
-    Trophies: {
-        screen: Trophies,
+
+    Settings: {
+        screen: SettingsScreen,
         navigationOptions: {
             // header: null,
 

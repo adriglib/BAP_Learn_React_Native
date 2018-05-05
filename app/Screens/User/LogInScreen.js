@@ -6,6 +6,7 @@ import {StyleSheet,
         View,
         ScrollView, 
         Image, 
+        Modal,
         Dimensions, 
         SectionList, 
         TouchableOpacity,
@@ -18,6 +19,7 @@ import App from '../../Components/General/App';
 import firebase from 'react-native-firebase';
 import Button from '../../Components/Buttons/SquareLargeButton';
 import TextField from '../../Components/Forms/TextField';
+import LoadingCircle from '../../Components/Loading/LoadingCircle';
 import validate from '../../Components/Forms/ValidateWrapper';
 
 export class LogInScreen extends Component {
@@ -35,17 +37,33 @@ export class LogInScreen extends Component {
             emailError: '',
             password: '',
             passwordError: '',
-            error: ''
+            error: '',
+            loadingModalVisible: false,
         }
     }
 
     loggedIn(){
-        this.props.navigation.navigate('Home')
+        this.props.navigation.navigate('Home');
+    }
+
+    openModal(){
+        this.setState({
+            loadingModalVisible: false,
+        })
+    }
+
+    closeModal(){
+        this.setState({
+            loadingModalVisible: false,
+        })
     }
 
     onLogin() {
-        console.log(this.state.email)
-        console.log(this.state.password)
+
+        this.openModal();
+
+        // console.log(this.state.email)
+        // console.log(this.state.password)
         const emailError = validate('email', this.state.email)
         const passwordError = validate('password', this.state.password)
     
@@ -55,13 +73,21 @@ export class LogInScreen extends Component {
         })
     
         if (emailError == null && passwordError == null) {
+            this.setState({
+                loadingModalVisible: true,
+            })
+
+
+        
+
             firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
             .then(async (user) => {
                 this.itemsRef = firebase.database().ref('Users/' + user._user.uid);
                 let database = this.itemsRef.once('value');
                 database.then(items => {
-                    console.log(items._value.experience)
+                    // console.log(items._value.experience)
                     AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(items));
+                    this.closeModal();
                 });
                 // If you need to do anything with the user, do it here
                 // The user will be logged in automatically by the 
@@ -69,7 +95,8 @@ export class LogInScreen extends Component {
             })
             .catch((error) => {
             const { code, message } = error;
-            console.log(error);
+            this.closeModal();
+            // console.log(error);
             this.setState({
                 error: error.toString()
             })
@@ -84,6 +111,19 @@ export class LogInScreen extends Component {
         const { navigate } = this.props.navigation;
         return (
             <View style={styles.container}>
+              <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.loadingModalVisible}
+                    onRequestClose={() => {
+                        this.setState({
+                            loadingModalVisible: false
+                        })
+                    }}>
+                    <View style={modal.modalContainer}>
+                            <LoadingCircle color="white" />
+                    </View>
+                </Modal>
                 <View style={styles.form}>
                     <View>
                         <Text style={styles.labels}>Email</Text>
@@ -127,7 +167,7 @@ export class LogInScreen extends Component {
                     </View>
 
                         <TouchableOpacity onPress={() => {this.onLogin()}}>
-                            <Button buttonText="Sign in"/>
+                            <Button backgroundColor="white" textColor="grey" buttonText="Sign in"/>
                         </TouchableOpacity>
                         <View>
                             <Text style={styles.warning}>{this.state.error}</Text>
@@ -184,3 +224,14 @@ const styles = StyleSheet.create({
         paddingBottom: 15
     }
 });
+
+
+const modal = StyleSheet.create({
+    modalContainer: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    }
+})

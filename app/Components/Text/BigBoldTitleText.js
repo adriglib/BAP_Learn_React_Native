@@ -23,7 +23,9 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     fontContainer: {
-        position: 'absolute',
-        padding: 20
+        // position: 'absolute',
+        padding: 20,
+        paddingTop: 35,
+        paddingBottom: 35
     }
 });

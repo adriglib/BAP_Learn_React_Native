@@ -16,7 +16,7 @@ export default class Animbutton extends Component {
    }
    _onPress(){
      this.props._onPress(!this.state.status)
-     console.log(!this.state.status)
+     // console.log(!this.state.status)
      this.setState({ status: !this.state.status})
      switch (this.props.effect) {
        case 'bounce':
@@ -55,7 +55,7 @@ export default class Animbutton extends Component {
   render() {
     const status = this.state.status;
           
-    // console.log('Button; ' + this.props.correct);   
+    // // console.log('Button; ' + this.props.correct);   
       
     return (
       <TouchableWithoutFeedback disabled={this.props.disabled} onPress={() => this._onPress()}>

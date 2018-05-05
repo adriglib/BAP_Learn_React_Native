@@ -8,14 +8,27 @@ import App from '../../Components/General/App';
 import firebase from 'react-native-firebase';
 
 export class HomeScreenLoggedOut extends Component {
-    
-//                    <View style={styles.imageContainer}>
-//                        <Image style={styles.homeUp} source={require('../../../img/home_down.png')}/>
-//                    </View>
+
+    constructor(props){
+        super(props)
+        this.state = {
+            isAuthenticated: false,
+            loading: true,
+        };
+    }
+
+    componentDidMount() {
+        firebase.auth().signInAnonymously()
+            .then(() => {
+                this.setState({
+                    isAuthenticated: true,
+                });
+            });
+    }
 
     render(){
         const { navigate } = this.props.navigation;
-        console.log(firebase.auth().currentUser)
+        // console.log(firebase.auth().currentUser)
         return (
             <View style={{flex: 1}}>
                 {/*<Text onPress={() => navigate('Profile')}>*/}
@@ -23,22 +36,41 @@ export class HomeScreenLoggedOut extends Component {
                 {/*</Text>*/}
                 <ScrollView style={styles.scrollContainer}>
                     <View style={styles.imageContainer}>
-                        <Image style={styles.homeUp} source={require('../../../img/home_up.png')}/>
                         <BigLightTitleText style={styles.title}>
                             Learn React Native
                         </BigLightTitleText>
-
                     </View>
                     <View style={styles.container}>
-                        {/*<App></App>*/}
+                        {/* <App></App> */}
                         <TouchableOpacity onPress={() => navigate('Documentation')}>
-                            <Button buttonText="Learn React Native"/>
-                        </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigate('')}>
-                            <Button buttonText="Settings"/>
+                            <View style={styles.menuItem}>
+                                <Image
+                                style={styles.menuIcon}
+                                source={require('../../../icons/open-book.png')}
+                                />
+                                <Text style={styles.menuTitle}>Learn it.</Text>
+                                <Text style={styles.menuDescription}>Tips, cheat sheet...</Text>
+                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('LogIn')}>
-                            <Button buttonText="Sign in"/>
+                            <View style={styles.menuItem}>
+                            <Image
+                                style={styles.menuIcon}
+                                source={require('../../../icons/student.png')}
+                                />
+                                <Text style={styles.menuTitle}>Sign in.</Text>
+                                <Text style={styles.menuDescription}>Quiz yourself and earn trophies.</Text>
+                            </View>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigate('Settings')}>
+                            <View style={styles.menuItem}>
+                                <Image
+                                style={styles.menuIcon}
+                                source={require('../../../icons/settings.png')}
+                                />
+                                <Text style={styles.menuTitle}>Settings.</Text>
+                                <Text style={styles.menuDescription}>Turn off your notifications.</Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -62,10 +94,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     imageContainer: {
-        flex: 1,
-        top: 0,
-        alignItems: 'stretch',
-        justifyContent: 'center',
+        backgroundColor: '#55d3c8',
     },
     title: {
         flex: 1,
@@ -83,5 +112,27 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height / 2,
         resizeMode: 'cover'
+    },
+    menuItem: {
+        width: Dimensions.get('window').width / 2 - 15, 
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 40
+    },
+    menuIcon: {
+        width: 70,
+        height: 70,
+        resizeMode: 'contain'
+    },
+    menuTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        paddingTop: 5,
+    },
+    menuDescription: {
+        textAlign: 'center',
+        padding: 10,
+        paddingTop: 5
     }
 });

@@ -5,6 +5,7 @@ import {StyleSheet,
         View,
         ScrollView, 
         Image, 
+        Modal,
         Dimensions, 
         SectionList, 
         TouchableOpacity, 
@@ -18,6 +19,7 @@ import firebase from 'react-native-firebase';
 import TextField from '../../Components/Forms/TextField';
 // import validation from '../../Components/Forms/Validation';
 import validate from '../../Components/Forms/ValidateWrapper';
+import LoadingCircle from '../../Components/Loading/LoadingCircle';
 import Button from '../../Components/Buttons/SquareLargeButton';
 
 
@@ -37,14 +39,25 @@ export class RegistrationScreen extends Component {
             password: '',
             passwordError: '',
             username: '',
-            usernameError: ''
+            usernameError: '',
+            loadingModalVisible: false,
         }
     }
 
+    openModal(){
+        this.setState({
+            loadingModalVisible: true,
+        })
+    }
+
+    closeModal(){
+        this.setState({
+            loadingModalVisible: false,
+        })
+    }
+
     register() {
-        console.log(this.state.email)
-        console.log(this.state.password)
-        console.log(this.state.username)
+
         const emailError = validate('email', this.state.email)
         const passwordError = validate('password', this.state.password)
         const usernameError = validate('username', this.state.username)
@@ -55,15 +68,9 @@ export class RegistrationScreen extends Component {
           usernameError: usernameError
         })
 
-        console.log(emailError)
-        console.log(passwordError)
-        console.log(usernameError)
     
         if (emailError == null && passwordError== null && usernameError == null) {
-
-            console.log(this.state.email)
-            console.log(this.state.password)
-            console.log(this.state.username)
+            this.openModal();
 
             firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password, this.state.username)
             .then(async (user) => {
@@ -77,8 +84,9 @@ export class RegistrationScreen extends Component {
                   this.itemsRef = firebase.database().ref('Users/' + user._user.uid);
                   let database = this.itemsRef.once('value');
                   database.then(items => {
-                      console.log(items._value.experience)
+                      // console.log(items._value.experience)
                       AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(items));
+                      this.closeModal();
                   });
 
                 // If you need to do anything with the user, do it here
@@ -87,6 +95,7 @@ export class RegistrationScreen extends Component {
             })
             .catch((error) => {
                 const { code, message } = error;
+                this.closeModal();
                 // For details of error codes, see the docs
                 // The message contains the default Firebase string
                 // representation of the error
@@ -98,7 +107,21 @@ export class RegistrationScreen extends Component {
     render(){
 
         return (
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
+                <View>
+                <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.loadingModalVisible}
+                    onRequestClose={() => {
+                        this.setState({
+                            loadingModalVisible: false
+                        })
+                    }}>
+                    <View style={modal.modalContainer}>
+                            <LoadingCircle color="white" />
+                    </View>
+                </Modal>
                 <View style={styles.form}>
                     <View>
                         <Text style={styles.labels}>Name or username</Text>
@@ -161,18 +184,19 @@ export class RegistrationScreen extends Component {
                     </View>
 
                         <TouchableOpacity onPress={() => {this.register()}}>
-                            <Button buttonText="Sign up"/>
+                            <Button backgroundColor="white" textColor="grey" buttonText="Sign up"/>
                         </TouchableOpacity>
 
                 </View>
-            </View>
+                </View>
+            </ScrollView>
         )
     }
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         padding: 50, 
         backgroundColor: "#55d3c8",
     },
@@ -195,3 +219,13 @@ const styles = StyleSheet.create({
         fontWeight: '700',
     }
 });
+
+const modal = StyleSheet.create({
+    modalContainer: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    }
+})

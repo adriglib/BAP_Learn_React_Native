@@ -6,21 +6,37 @@ import {    StyleSheet,
 } from 'react-native';
 
 export default class ProgressBar extends Component {
+
+    gettingUserData(props) {
+        const experience = this.props.xp;
+        if (experience == 0) {
+          return  <Text>Hi {this.props.username}! {"\n"}{"\n"}
+          Welcome to the React Native Course, here you can learn this exiting framework in an interactive way. {"\n"}
+          Earn thropies and become a true React Native master! {"\n"}{"\n"}
+          You can only learn about a new skill when you've answered all previous question correctly. You gain experience by learning skills.{"\n"}{"\n"}
+          Have fun!
+          {"\n"} </Text>;
+        }
+        else if(experience >= 100) {
+            return <Text>Look who it is, our React Native superstar {this.props.username}! 
+            You have finished all games and sadly can't earn any more experience, 
+            if you want you can retake the quizes.{"\n"}{"\n"}</Text>;
+        }
+        else {
+            return  <Text>Welcome back {this.props.username}! Enjoy learning React Native and earning those throphies.{"\n"}{"\n"}</Text>;
+        }
+      }
+      
+
     render() {
         var width = (Dimensions.get('window').width / 3.2)*2; 
         var progress = this.props.progress < 100 ? '0.' + this.props.progress : '1';
-        const firstTime = this.props.xp == 0;
+
+
         return(
             <View>
-                <View style={styles.container}>
-                    {firstTime ?
-                    <Text>Hi {this.props.username}! {"\n"}{"\n"}
-                    Welcome to the React Native Course, here you can learn this exiting framework in an interactive way. {"\n"}
-                    Earn thropies and become a true React Native master! {"\n"}{"\n"}
-                    You can only learn about a new skill when you've answered all previous question correctly. You gain experience by learning skills.{"\n"}{"\n"}
-                    Have fun!
-                    {"\n"} </Text> : 
-                    <Text>Welcome back {this.props.username}! Enjoy learning React Native and earning those throphies.{"\n"}{"\n"}</Text>}
+                <View>
+                    {this.gettingUserData()}
                 </View>
                 <View style={styles.container}>
                     <View style={styles.experience}>       

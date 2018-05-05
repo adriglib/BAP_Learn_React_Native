@@ -7,6 +7,8 @@ import firebase from 'react-native-firebase';
 // import { MarkdownView } from 'react-native-markdown-view';
 import HTML from 'react-native-render-html';
 
+
+
 export class DocumentationItemScreen extends Component {
 
     static navigationOptions = {
@@ -29,11 +31,12 @@ export class DocumentationItemScreen extends Component {
         this.items = []
         this.title = ''
         this.data = []
+
     }
 
     componentDidMount() {
         let database = this.itemsRef.once('value');
-        console.log(database.value)
+        // console.log(database.value)
         database.then(items => {
             this.data = items.val()
             this.setState({
@@ -50,8 +53,8 @@ export class DocumentationItemScreen extends Component {
 
         // const classes = {}
         const tags = {
-            h3: {
-                fontSize: 24,
+            p: {
+                fontSize: 54,
                 fontWeight: '800'
             },
             pre: {
@@ -72,21 +75,36 @@ export class DocumentationItemScreen extends Component {
                 flex: 1}
         };
 
+        const html = `
+    <i>Here, we have a style set on the "i" tag with the "tagsStyles" prop.</i>
+    <p class="last-paragraph">Finally, this paragraph is styled through the classesStyles prop</p>`;
+
+
+
         return (
+
 
             <View style={{flex: 1}}>
                 <ScrollView style={styles.scrollContainer}>
-                    <View style={styles.imageContainer}>
-                        <Image style={styles.pageUp} source={require('../../../img/page_up.png')}/>
-                        <BigLightTitleText style={styles.title}>
-                            {state.params.name}
-                        </BigLightTitleText>
+                    <View  style={styles.titleContainer}>
+                            <Text style={styles.title}>{state.params.name}</Text>
                     </View>
                     <View style={styles.container}>
-                        <HTML html={this.state.htmlContent} tagsStyles={tags} classesStyles={classes} Styles={tags} imagesMaxWidth={Dimensions.get('window').width} />
-                    </View>
-                    <View style={styles.imageContainer}>
-                        <Image style={styles.homeUp} source={require('../../../img/home_down.png')}/>
+                        <HTML html={this.state.htmlContent} 
+                            tagsStyles={ 
+                                { 
+                                    h3: { fontSize: 19},
+                                    li: { fontSize: 16},
+                                    img: { paddingTop: 20, paddingBottom: 20},
+                                    pre: { paddingTop: 20, paddingBottom: 20},
+                                }
+                            } 
+                            classesStyles={
+                                { 
+                                    'language-bash': { backgroundColor: '#32476b', fontSize: 22, textAlign: 'left', color: 'white', fontWeight: '800' } 
+                                }
+                            } 
+                            imagesMaxWidth={Dimensions.get('window').width/1.2} />
                     </View>
                 </ScrollView>
             </View>
@@ -109,10 +127,7 @@ const styles = StyleSheet.create({
         // justifyContent: 'flex-start'
     },
     imageContainer: {
-        flex: 1,
-        top: 0,
-        alignItems: 'stretch',
-        justifyContent: 'center',
+        backgroundColor: '#55d3c8'
     },
     item: {
         color: '#919191',
@@ -134,21 +149,21 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height / 2,
         resizeMode: 'cover'
+    },
+    titleContainer: {
+        backgroundColor: '#55d3c8',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        paddingTop: 50,
+        paddingBottom : 40,
+        paddingRight : 25,
+        paddingLeft : 25,
+    },
+    title: {
+        fontSize: 30,
+        textAlign: 'left',
+        fontFamily: "ArticulatCF-Light",
+        color: 'white',
     }
 });
 
-const markdownStyles = {
-    heading1: {
-        fontSize: 24,
-        color: 'purple',
-    },
-    link: {
-        color: 'pink',
-    },
-    mailTo: {
-        color: 'orange',
-    },
-    text: {
-        color: '#555555',
-    },
-}

@@ -46,8 +46,8 @@ export class SplashScreen extends Component {
         // The application is initialising
         if (!this.state.loading){
             // The user is an Object, so they're logged in
-            console.log('Done loading')
-            if (this.state.user) {
+            // console.log('Done loading')
+            if (this.state.user && this.state.user.isAnonymous != true) {
                this.props.navigation.navigate('Home')
             } else {  
                 this.props.navigation.navigate('HomeNoLogin')

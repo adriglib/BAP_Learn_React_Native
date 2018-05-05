@@ -13,6 +13,7 @@ import {StyleSheet,
 import SmallerLightTitleText from '../../Components/Text/SmallerLightTitleText';
 import TableOfContents from '../../Components/Tables/TableOfContents';
 import ProgressBar from '../../Components/Progress/ProgressBar';
+import LoadingCircle from '../../Components/Loading/LoadingCircle';
 import App from '../../Components/General/App';
 import firebase from 'react-native-firebase';
 
@@ -27,7 +28,8 @@ export class Levels extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            experience: '0'
+            experience: '0',
+            canRender: false
         }
     }
 
@@ -49,10 +51,14 @@ export class Levels extends Component {
               this.setState({
                   experience: userInfo.experience,
                   username: userInfo.username
+              }, () => {
+                  this.setState({
+                      canRender: true,
+                  })
               })
             }
           } catch (error) {
-              console.log(error);
+              // console.log(error);
             // Error retrieving data
           }
     }
@@ -212,6 +218,8 @@ export class Levels extends Component {
             },
         }
 
+        // alert(this.state.canRender);
+
         const {navigate} = this.props.navigation;
   
         const _that= this;
@@ -260,7 +268,7 @@ export class Levels extends Component {
                         </SmallerLightTitleText>
                     </View>
                     <View style={styles.progressContainer}>
-                        <ProgressBar username={this.state.username} xp={this.state.experience} progress={this.state.experience}/>
+                       {this.state.canRender ? <ProgressBar username={this.state.username} xp={this.state.experience} progress={this.state.experience}/> : <LoadingCircle></LoadingCircle>}
                     </View>
                     <View style={styles.container}>
                         {levels}

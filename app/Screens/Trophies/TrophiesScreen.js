@@ -44,7 +44,7 @@ export class Trophies extends Component {
             const value = await AsyncStorage.getItem('@MySuperStore:user');
             if (value !== null){
               let userInfo = JSON.parse(value);
-              console.log('User info:', userInfo);
+              // console.log('User info:', userInfo);
               this.setState({
                   experience: userInfo.experience,
                   username: userInfo.username,
@@ -52,7 +52,7 @@ export class Trophies extends Component {
               })
             }
           } catch (error) {
-              console.log(error);
+              // console.log(error);
             // Error retrieving data
           }
     }
@@ -60,7 +60,7 @@ export class Trophies extends Component {
 
     render(){
         const trophiesObject = {
-            'level 1': {
+            'first trophy': {
                 title: 'Getting Started',
                 description: 'Good job! You have earned this trophy because you succesfully finished the first quiz.',
                 imgUrl: require('../../../icons/diploma.png'),
@@ -122,42 +122,58 @@ export class Trophies extends Component {
                 }
         }
 
-        // console.log(this.state.trophies)
 
-        const trophies = 
-        Object.keys(trophiesObject)
-            .filter(key => key in this.state.trophies)
-            .map((key, index) => {
-                console.log(this.state.trophies[key])
-                return ( 
-                    <View key={key} style={skills.trophy}>
-                      <AlertButton disabled={false} imageURL={trophiesObject[key].imgUrl} title={trophiesObject[key].title} description={trophiesObject[key].description} dateEarned={this.state.trophies[key]} />
-                    </View>
-                )})
+        // const userHasTrophies = false ;
+        const userHasTrophies = !(this.state.trophies == undefined || this.state.trophies == null) ;
 
-        const lockedTrophies = 
-        Object.keys(trophiesObject)
-            .filter(key => !(key in this.state.trophies))
-            .map((key, index) => {
-                return ( 
-                    <View key={key} style={skills.trophy}>
-                      <AlertButton disabled={true} imageURL={trophiesObject[key].imgUrl} title={trophiesObject[key].title} description={trophiesObject[key].description} dateEarned={this.state.trophies[key]} />
-                    </View>
-                )})
-        // console.log(lockedTrophies)
+        let allTrophies;
+        let allTrophiesWhenUserHasTrophies;
+        let trophies;
+        let lockedTrophies;
+// console.log(userHasTrophies);
+        if(userHasTrophies){
+            console.log(this.state.trophies)
+            trophies = 
+            Object.keys(trophiesObject)
+                .filter(key => key in this.state.trophies)
+                .map((key, index) => {
+                    // console.log(this.state.trophies[key])
+                    return ( 
+                        <View key={key} style={skills.trophy}>
+                          <AlertButton disabled={false} imageURL={trophiesObject[key].imgUrl} title={trophiesObject[key].title} description={trophiesObject[key].description} dateEarned={this.state.trophies[key]} />
+                        </View>
+            )})
+
+            lockedTrophies = 
+            Object.keys(trophiesObject)
+                .filter(key => !(key in this.state.trophies))
+                .map((key, index) => {
+                    return ( 
+                        <View key={key} style={skills.trophy}>
+                          <AlertButton disabled={true} imageURL={trophiesObject[key].imgUrl} title={trophiesObject[key].title} description={trophiesObject[key].description} dateEarned={this.state.trophies[key]} />
+                        </View>
+            )})
+        }
+        else {
+            allTrophies = 
+            Object.keys(trophiesObject)
+                .map((key, index) => {
+                    return ( 
+                        <View key={key} style={skills.trophy}>
+                          <AlertButton disabled={true} imageURL={trophiesObject[key].imgUrl} title={trophiesObject[key].title} description={trophiesObject[key].description} />
+                        </View>
+            )})
+
+            console.log(allTrophies)
+        }
+
+
+        // // console.log(lockedTrophies)
 
         const {navigate} = this.props.navigation;
   
         const _that= this;
-        // const trophies = 
-        // Object.keys(trophiesObject).map( function(key, value) {
-        //         return ( 
-        //             <View key={key} style={skills.trophy}>
-        //                     <Text style={skills.trophyTitle}>{trophiesObject[key].title}</Text>
-        //                     <Text style={skills.trophyDescription}>{trophiesObject[key].description}</Text>
-        //             </View>
-        //         )
-        // });
+
         return (
             <View style={{flex: 1}}>
                 <ScrollView style={styles.scrollContainer}>
@@ -167,8 +183,7 @@ export class Trophies extends Component {
                         </SmallerLightTitleText>
                     </View>
                     <View style={styles.container}>
-                        {trophies}
-                        {lockedTrophies}
+                        {userHasTrophies ? [trophies, lockedTrophies] : allTrophies}
                     </View>
                 </ScrollView>
             </View>

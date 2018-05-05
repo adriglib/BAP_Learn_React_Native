@@ -24,14 +24,14 @@ export class DocumentationScreen extends Component {
             <View style={{flex: 1}}>
                 <ScrollView style={styles.scrollContainer}>
                     <View style={styles.imageContainer}>
-                        <Image style={styles.pageUp} source={require('../../../img/page_up.png')}/>
+                        {/* <Image style={styles.pageUp} source={require('../../../img/page_up.png')}/> */}
                         <BigLightTitleText style={styles.title}>
                             Learn more about React Native
                         </BigLightTitleText>
                     </View>
                     <View style={styles.container}>
-                        <Text>With this cheat sheet you can refresh your React Native knowledge. If you are new to the framework you can read the documentation first.</Text>
-                        <Text onPress={() => Linking.openURL('http://facebook.github.io/react-native/docs/getting-started.html')}>Press here to open the docs.</Text>
+                        <Text style={styles.text}>With this cheat sheet you can refresh your React Native knowledge. If you are new to the framework you can read the documentation first.</Text>
+                        <Text style={styles.linkText} onPress={() => Linking.openURL('http://facebook.github.io/react-native/docs/getting-started.html')}>Press here to open the docs.</Text>
                     </View>
                     <View style={styles.container}>
                         {/*<Text>With this cheat sheet you can refresh your React Native knowledge. If you are new to the framework you can read the documentation first.</Text>*/}
@@ -39,9 +39,6 @@ export class DocumentationScreen extends Component {
                         <TableOfContents style={styles.tableOfContents}
                         navigator={this.props.navigation}
                         />
-                    </View>
-                    <View style={styles.imageContainer}>
-                        <Image style={styles.homeUp} source={require('../../../img/home_down.png')}/>
                     </View>
                 </ScrollView>
             </View>
@@ -53,7 +50,6 @@ const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
         backgroundColor: 'white',
-        width: Dimensions.get('window').width,
         marginTop: 25,
     },
     container: {
@@ -67,6 +63,7 @@ const styles = StyleSheet.create({
         top: 0,
         alignItems: 'stretch',
         justifyContent: 'center',
+        backgroundColor: '#55d3c8',
     },
     pageUp: {
         flex: 1,
@@ -78,5 +75,12 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height / 2,
         resizeMode: 'cover'
+    },
+    text: {
+        fontSize: 16,
+    },
+    linkText: {
+        fontSize: 16,
+        color: '#55d3c8'
     }
 });

@@ -58,6 +58,7 @@ export class Quiz extends Component {
             modalVisible: false,
             modalText: '',
             experience: nav.state.params.experience,
+            quizNr:  nav.state.params.quizNr,
             showNextButton: false,
         }
     }
@@ -66,13 +67,13 @@ export class Quiz extends Component {
         let database = this.itemsRef.once('value');
         database.then(items => {
             quizData = items._value;
-            // console.log(quizData)
-            // console.log(nav.state.params.quizNr)
+            // // console.log(quizData)
+            // // console.log(nav.state.params.quizNr)
             // currentQuiz = quizData['question' + nav.state.params.quizNr]
-            // console.log(currentQuiz);
+            // // console.log(currentQuiz);
             newArray = quizData;
 
-            // console.log(newArray['question' + this.questionNumber])
+            // // console.log(newArray['question' + this.questionNumber])
 
             this.setState({
                 question: newArray['question' + this.questionNumber].question,
@@ -87,8 +88,23 @@ export class Quiz extends Component {
             modalVisible: visible,
         });
 
-        if(succeeded){
+        //Now check if they succeeded AND it is the last level.
+        let calculatedLevelWithExperience = (this.state.experience / 5) + 1;
+
+        if(succeeded && this.state.quizNr == calculatedLevelWithExperience){
             const experience = this.state.experience + 5;
+
+            switch(this.questionNumber) {
+                case 1:
+                    this.earnTrophy('first trophy');
+                    break;
+                case 2:
+                    this.earnTrophy('second');
+                    break;
+                default:
+                    alert('default');
+            } 
+
             this.setState({
                 modalText: 'You have passed this course and earned 5XP!',
             });
@@ -111,10 +127,38 @@ export class Quiz extends Component {
                     firebase.database().ref('Users/' + loggedInUser._user.uid + '/experience').set(newExperience);
                 } )
         }else{
-            this.setState({
-                modalText: 'You have not passed this course and have not earned any XP.'
-            });
+            if(!succeeded){
+                this.setState({
+                    modalText: 'You have not passed this course and have not earned any XP.'
+                });
+            } else {
+                this.setState({
+                    modalText: 'You have passed this course but you have already finished this before thus you will not earn XP.'
+                });
+            }
         }
+    }
+
+    earnTrophy(name){
+       // console.log('earning trophy')
+        AsyncStorage.getItem('@MySuperStore:user').then((values) => {
+            const value = JSON.parse(values);
+            
+            let date = new Date();
+            day = date.getDate();
+            month = date.getMonth();
+            year = date.getFullYear();
+
+            value["trophies"][name.toString()] = `${day}-${month}-${year}`;
+            // value["username"]= 'test';
+
+            // console.log(value);
+
+            AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(value));
+            
+            const loggedInUser = firebase.auth().currentUser;
+            firebase.database().ref('Users/' + loggedInUser._user.uid + '/trophies/' + name).set( `${day}-${month}-${year}`);
+        } )
     }
 
     prev() {
@@ -174,7 +218,7 @@ export class Quiz extends Component {
         if (status == true) {
             
             const count = this.state.countCheck + 1;
-            console.log(count)
+            // console.log(count)
             
             this.setState({
                 countCheck: count
@@ -192,7 +236,7 @@ export class Quiz extends Component {
                     correct: true, 
                     status: false}, 
                     function () {
-                    // console.log(this.state.correct)
+                    // // console.log(this.state.correct)
                     // setTimeout(() => {
                     //   this.next();
                     // }, 3000);
@@ -208,7 +252,7 @@ export class Quiz extends Component {
                      status: false,
                      succesStatus: false,
                     }, function () {
-                    // console.log(this.state.correct)
+                    // // console.log(this.state.correct)
                     // setTimeout(() => {
                     //   this.next();
                     // }, 5000);
@@ -237,7 +281,7 @@ export class Quiz extends Component {
     const quizOptions = Object.keys(currentOptions).map( function(i) {
       return (  
           <View key={i}>
-            <Animbutton disabled={_this.state.disabledButtons} backgroundColor={_this.state.bgColor[i]} countCheck={_this.state.countCheck} correct={_this.state.correct} effect={"rubberband"} _onPress={(status) => _this._answer(status,i)} text={currentOptions[i]} />
+            <Animbutton disabled={_this.state.disabledButtons} backgroundColor={_this.state.bgColor[i]} countCheck={_this.state.countCheck} correct={_this.state.correct} effect={"rubberBand"} _onPress={(status) => _this._answer(status,i)} text={currentOptions[i]} />
           </View>
                                                    )
     });
@@ -266,9 +310,8 @@ export class Quiz extends Component {
                             <View>
                                 <Text style={modal.text}>{this.state.modalText}</Text>
                             </View>
-                            <View>
+                            <View style={modal.buttons}>
                                 <TouchableOpacity  onPress={() => {
-                                    this.openModal(!this.state.modalVisible);
                                     this.questionNumber = 1;
                                     this.setState({
                                         question: newArray['question1'].question,
@@ -276,15 +319,16 @@ export class Quiz extends Component {
                                         correctOption: newArray['question1'].correctOption,
                                         bgColor:  {0: '#e6e6e6', 1: '#e6e6e6', 2: '#e6e6e6', 3: '#e6e6e6'},
                                         disabledButtons: false,
-                                    });
+                                        showNextButton: false,
+                                    }, () => this.openModal(!this.state.modalVisible) );
                                     }}>
-                                <Button buttonText="Retry"/>
+                                <Button backgroundColor="white" textColor="grey" buttonText="Retry"/>
                                 </TouchableOpacity>
                                 <TouchableOpacity  onPress={() => {
                                     this.openModal(!this.state.modalVisible);
                                     this.props.navigation.navigate('Levels', { getXP: true });
                                     }}>
-                                <Button buttonText="Close"/>
+                                <Button backgroundColor="white" textColor="grey" buttonText="Close"/>
                                 </TouchableOpacity>
                             </View>
                         </View>
@@ -385,5 +429,8 @@ const modal = StyleSheet.create({
         textAlign: 'left',
         fontFamily: "ArticulatCF-Light",
         color: 'white',
+    },
+    buttons: {
+        paddingTop: 50,
     }
 });

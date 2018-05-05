@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { StackNavigator } from 'react-navigation';
-import {    StyleSheet, Text, View,ScrollView, Image, Dimensions, TouchableOpacity} from 'react-native';
+import {   Modal, Alert, StyleSheet, Text, View,ScrollView, Image, Dimensions, TouchableOpacity} from 'react-native';
 import Button from '../../Components/Buttons/SquareLargeButton';
 import BigBoldTitleText from '../../Components/Text/BigBoldTitleText';
 import BigLightTitleText from '../../Components/Text/BigLightTitleText';
+import LoadingCircle from '../../Components/Loading/LoadingCircle';
 import App from '../../Components/General/App';
 
 import firebase from 'react-native-firebase';
@@ -17,49 +18,121 @@ export class HomeScreenLoggedIn extends Component {
     constructor(props){  
         super(props)
         const { navigate } = this.props.navigation;
+        this.state = {
+            loadingModalVisible: false,
+        }
+
+        console.log(firebase.auth().currentUser._user.isAnonymous);
+        
     }
 
-    logout = async () => {
-        try {
-            await firebase.auth().signOut();
-        } catch (e) {
-            console.log(e);
-        }
+    openModal(){
+        this.setState({
+            loadingModalVisible: true,
+        })
     }
+    closeModal(){
+        this.setState({
+            loadingModalVisible: false,
+        })
+    }
+
+    logout () {
+        this.openModal();
+
+        let _this = this;
+
+            try {
+                firebase.auth().signOut().then(function() {
+                    _this.closeModal();
+                });
+            } catch (e) {
+                Alert.alert(
+                    'Woops!',
+                    'Something went wrong, you did not sign out succesfully.',
+                    { cancelable: false }
+                )
+                _this.closeModal();
+                // console.log(e);
+            }
+
+    }
+
 
     render(){
         const { navigate } = this.props.navigation;
-        console.log(firebase.auth().currentUser)
+        // console.log(firebase.auth().currentUser)
         return (
             <View style={{flex: 1}}>
                 {/*<Text onPress={() => navigate('Profile')}>*/}
                     {/*Navigate to Profile*/}
                 {/*</Text>*/}
                 <ScrollView style={styles.scrollContainer}>
-                    <View style={styles.imageContainer}>
-                        <Image style={styles.homeUp} source={require('../../../img/home_up.png')}/>
-                        <BigLightTitleText style={styles.title}>
-                            Learn React Native
-                        </BigLightTitleText>
+                    <Modal
+                    animationType="fade"
+                    transparent={true}
+                    visible={this.state.loadingModalVisible}
+                    onRequestClose={() => {
+                        this.setState({
+                            loadingModalVisible: false
+                        })
+                    }}>
+                    <View style={modal.modalContainer}>
+                            <LoadingCircle color="white" />
+                    </View>
+                    </Modal>
 
+                    <View style={styles.imageContainer}>
+                        <Text></Text>
+                        <BigBoldTitleText style={styles.title}>
+                            Learn{"\n"}React Native
+                        </BigBoldTitleText>
                     </View>
                     <View style={styles.container}>
                         {/*<App></App>*/}
                         <TouchableOpacity onPress={() => navigate('Documentation')}>
-                            <Button buttonText="Learn React Native"/>
+                            <View style={styles.menuItem}>
+                                <Image
+                                style={styles.menuIcon}
+                                source={require('../../../icons/open-book.png')}
+                                />
+                                <Text style={styles.menuTitle}>Learn it.</Text>
+                                <Text style={styles.menuDescription}>Tips, cheat sheet...</Text>
+                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('Levels')}>
-                            <Button buttonText="Play the game"/>
+                            <View style={styles.menuItem}>
+                            <Image
+                                style={styles.menuIcon}
+                                source={require('../../../icons/logo.png')}
+                                />
+                                <Text style={styles.menuTitle}>Quiz it.</Text>
+                                <Text style={styles.menuDescription}>Earn trophies and XP.</Text>
+                            </View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('Trophies')}>
-                            <Button buttonText="Trophies"/>
+                            <View style={styles.menuItem}>
+                                <Image
+                                style={styles.menuIcon}
+                                source={require('../../../icons/trophy.png')}
+                                />
+                                <Text style={styles.menuTitle}>Trophies.</Text>
+                                <Text style={styles.menuDescription}>See the trophies you have earned..</Text>
+                            </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => navigate('')}>
-                            <Button buttonText="Settings"/>
+                        <TouchableOpacity onPress={() => navigate('Settings')}>
+                            <View style={styles.menuItem}>
+                            <Image
+                                style={styles.menuIcon}
+                                source={require('../../../icons/settings.png')}
+                                />
+                                <Text style={styles.menuTitle}>Settings.</Text>
+                                <Text style={styles.menuDescription}>Sign off, delete profile, notifications...</Text>
+                            </View>
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => {this.logout()}}>
+                        {/* <TouchableOpacity onPress={() => {this.logout()}}>
                             <Button buttonText="Sign out"/>
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
                     </View>
                 </ScrollView>
             </View>
@@ -73,7 +146,6 @@ const styles = StyleSheet.create({
     scrollContainer: {
         flex: 1,
         backgroundColor: 'white',
-        width: Dimensions.get('window').width,
     },
     container: {
         flex: 1,
@@ -83,10 +155,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     imageContainer: {
-        flex: 1,
-        top: 0,
-        alignItems: 'stretch',
-        justifyContent: 'center',
+        backgroundColor: '#55d3c8',
     },
     title: {
         flex: 1,
@@ -104,5 +173,37 @@ const styles = StyleSheet.create({
         width: Dimensions.get('window').width,
         height: Dimensions.get('window').height / 2,
         resizeMode: 'cover'
+    },
+    menuItem: {
+        width: Dimensions.get('window').width / 2 - 15, 
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingBottom: 40
+    },
+    menuIcon: {
+        width: 70,
+        height: 70,
+        resizeMode: 'contain'
+    },
+    menuTitle: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        paddingTop: 5,
+    },
+    menuDescription: {
+        textAlign: 'center',
+        padding: 10,
+        paddingTop: 5
     }
 });
+
+const modal = StyleSheet.create({
+    modalContainer: {
+        width: Dimensions.get('window').width,
+        height: Dimensions.get('window').height,
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: 'rgba(52, 52, 52, 0.6)',
+    }
+})
