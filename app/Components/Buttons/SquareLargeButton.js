@@ -9,10 +9,30 @@ import {    StyleSheet,
 
 export default class Button extends Component {
 
+    constructor(props) {  
+        super(props)
+        this.state = {
+            width: Dimensions.get("window").width,
+        }
+    }
+
+    componentWillMount() {
+        Dimensions.addEventListener('change', () => {
+            let newWidth =  Dimensions.get("window").width;
+            this.setState({
+                width: newWidth
+            });
+        });
+    }
+
+    componentWillUnmount () {
+        Dimensions.removeEventListener('change');
+    }
+
     render() {
         var bgC = true;
         return(
-            <View style={[styles.box, {backgroundColor: this.props.backgroundColor}]}>
+            <View style={[styles.box, {backgroundColor: this.props.backgroundColor, width: 250}]}>
                 <Text style={[styles.button, {color: this.props.textColor}]}>{this.props.buttonText}</Text>
             </View>
         )
@@ -28,7 +48,6 @@ const styles = StyleSheet.create({
         margin: 3,
         justifyContent: 'center',
         // height: Dimensions.get('window').width / 6,
-        width: Dimensions.get('window').width / 1.5,
         padding: 20,
         borderRadius: 50,
     },

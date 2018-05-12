@@ -89,9 +89,11 @@ export class SettingsScreen extends Component {
 
     logout () {
         this.openModal();
+        
 
         let _this = this;
 
+        setTimeout(function(){
             try {
                 firebase.auth().signOut().then(function() {
                     _this.closeModal();
@@ -105,7 +107,9 @@ export class SettingsScreen extends Component {
                 _this.closeModal();
                 // console.log(e);
             }
+        }, 2000)
 
+           
     }
 
     showAlert() {
@@ -171,12 +175,12 @@ export class SettingsScreen extends Component {
                     width:  this.state.width,
                     borderLeftWidth: Math.sqrt((this.state.width *this.state.width) + 100),
                     }]}></View>
-                    <View style={styles.settingsContainer}>
-                        <View style={styles.settingsTextContainer}>
+                    <View style={[styles.settingsContainer, {margin: (Dimensions.get('window').width / 12) * 1,}]}>
+                        <View style={[styles.settingsTextContainer,{width: (this.state.width / 12) * 7}]}>
                             <Text style={styles.settingsTitle}>Turn off notifications</Text>
                             <Text style={styles.settingsDescription}>You will not recieve a daily notification by turning this off.</Text>
                         </View>
-                        <View style={styles.settingsSwitchContainer}>
+                        <View style={[styles.settingsSwitchContainer, {width: (this.state.width / 12) * 3,}]}>
                              <Switch ></Switch>
                         </View>
                     </View>
@@ -203,14 +207,9 @@ const styles = StyleSheet.create({
     settingsContainer: {
         display: 'flex',
         flexDirection: 'row',
-        margin: (Dimensions.get('window').width / 12) * 1,
         marginBottom: 5,
     },
-    settingsTextContainer: {
-        width: (Dimensions.get('window').width / 12) * 7
-    },
     settingsSwitchContainer: {
-        width: (Dimensions.get('window').width / 12) * 3,
         alignItems: 'center'
     },
     settingsTitle: {

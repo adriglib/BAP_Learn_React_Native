@@ -97,7 +97,7 @@ android {
     compileSdkVersion 26
 
     defaultConfig {
-        applicationId "com.heyo"
+        applicationId "com.learnreactnative"
         minSdkVersion 16
         targetSdkVersion 26
         versionCode 1

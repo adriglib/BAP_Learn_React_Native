@@ -27,6 +27,7 @@ export class SplashScreen extends Component {
         this.state = {
             loading: true,
             nullUserIsOnHomepage: false,
+            user: null
         };
     }
     
@@ -38,7 +39,7 @@ export class SplashScreen extends Component {
         let _this = this;
         this.setState({
             loading: false,
-            user,
+            user: user
         });
         setTimeout( () => {
             this.checkLoggedInt();

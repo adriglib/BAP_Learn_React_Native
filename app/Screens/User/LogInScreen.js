@@ -40,7 +40,21 @@ export class LogInScreen extends Component {
             passwordError: '',
             error: '',
             loadingModalVisible: false,
+            width: Dimensions.get("window").width,
         }
+    }
+
+    componentWillMount() {
+        Dimensions.addEventListener('change', () => {
+            let newWidth =  Dimensions.get("window").width;
+            this.setState({
+                width: newWidth
+            });
+        });
+    }
+
+    componentWillUnmount () {
+        Dimensions.removeEventListener('change');
     }
 
     loggedIn(){
@@ -111,6 +125,7 @@ export class LogInScreen extends Component {
     render(){
         const { navigate } = this.props.navigation;
         return (
+            <ScrollView style={{flex: 1,  backgroundColor: "#55d3c8",}}>
             <View style={styles.container}>
               <Modal
                     animationType="fade"
@@ -121,7 +136,7 @@ export class LogInScreen extends Component {
                             loadingModalVisible: false
                         })
                     }}>
-                    <View style={modal.modalContainer}>
+                    <View style={[modal.modalContainer, {width: this.state.width}]}>
                             <LoadingCircle color="white" />
                     </View>
                 </Modal>
@@ -145,6 +160,7 @@ export class LogInScreen extends Component {
                             error={this.state.emailError}/>
                         <Text style={styles.validation}>{this.state.emailError}</Text>
                     </View>
+
                     <View>
                         <Text style={styles.labels}>Password</Text>
                         <TextInput 
@@ -166,29 +182,32 @@ export class LogInScreen extends Component {
                             error={this.state.passwordError}/>
                         <Text style={styles.validation}>{this.state.passwordError}</Text>
                     </View>
-                    <Animatable.View animation="pulse" delay={5000} durarion={10000} iterationCount="infinite">
-                        <Animatable.View animation="zoomIn">
-                            <TouchableOpacity onPress={() => {this.onLogin()}}>
-                                <Button backgroundColor="white" textColor="grey" buttonText="Sign in"/>
-                            </TouchableOpacity>
+                    <View style={{flex: 1}}>
+                        
+                        <Animatable.View animation="pulse" delay={5000} durarion={10000} iterationCount="infinite">
+                            <Animatable.View  animation="zoomIn">
+                                <TouchableOpacity onPress={() => {this.onLogin()}}>
+                                    <Button backgroundColor="white" textColor="grey" buttonText="Sign in"/>
+                                </TouchableOpacity>
+                            </Animatable.View>
                         </Animatable.View>
-                    </Animatable.View>
 
 
                         <Animatable.View animation="bounceIn">
                             <Text style={styles.warning}>{this.state.error}</Text>
                         </Animatable.View>
-                        <View>
-                            <TouchableOpacity onPress={() => navigate('Registration')}>
-                                <Text style={styles.register}>Don't have an account? Register.</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity onPress={() => navigate('HomeNoLogin')}>
-                                <Text style={styles.register}>Use the app without an account.</Text>
-                            </TouchableOpacity>
-                        </View>
+
+                        <TouchableOpacity onPress={() => navigate('Registration')}>
+                            <Text style={styles.register}>Don't have an account? Register.</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigate('HomeNoLogin')}>
+                            <Text style={styles.register}>Use the app without an account.</Text>
+                        </TouchableOpacity>
+                    </View>
 
                 </View>
             </View>
+            </ScrollView>
         )
     }
 }
@@ -199,14 +218,14 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 50, 
         backgroundColor: "#55d3c8",
-        width: Dimensions.get('window').width,
     },
     labels: {
         color: 'white',
         fontSize: 18
     },
     form: {
-        marginTop: 40
+        marginTop: 40,
+        justifyContent: 'center'
     },
     TextField: {
         color: 'white',
@@ -231,12 +250,11 @@ const styles = StyleSheet.create({
     }
 });
 
-
 const modal = StyleSheet.create({
     modalContainer: {
-        width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
         alignItems: 'center',
+        alignSelf:'center',
         justifyContent: 'center',
         backgroundColor: 'rgba(52, 52, 52, 0.6)',
     }

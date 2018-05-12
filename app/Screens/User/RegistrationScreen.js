@@ -41,7 +41,22 @@ export class RegistrationScreen extends Component {
             username: '',
             usernameError: '',
             loadingModalVisible: false,
+            
+            width: Dimensions.get("window").width,
         }
+    }
+
+    componentWillMount() {
+        Dimensions.addEventListener('change', () => {
+            let newWidth =  Dimensions.get("window").width;
+            this.setState({
+                width: newWidth
+            });
+        });
+    }
+
+    componentWillUnmount () {
+        Dimensions.removeEventListener('change');
     }
 
     openModal(){
@@ -114,87 +129,87 @@ export class RegistrationScreen extends Component {
     render(){
 
         return (
-            <ScrollView style={styles.container}>
-                <View>
-                <Modal
-                    animationType="fade"
-                    transparent={true}
-                    visible={this.state.loadingModalVisible}
-                    onRequestClose={() => {
-                        this.setState({
-                            loadingModalVisible: false
-                        })
-                    }}>
-                    <View style={modal.modalContainer}>
-                            <LoadingCircle color="white" />
-                    </View>
-                </Modal>
-                <View style={styles.form}>
-                    <View>
-                        <Text style={styles.labels}>Name or username</Text>
-                        <TextInput 
-                            style={styles.TextField}
-                            selectionColor={"#F06449"}
-                            underlineColorAndroid={"white"}
-                            onChangeText={value => {
-                                this.setState({
-                                    username: value
-                                })
-                            }}
-                            onBlur={() => {
-                                this.setState({
-                                usernameError: validate('username', this.state.username)
-                                })
-                            }}
-                            error={this.state.usernameError}/>
-                        <Text style={styles.validation}>{this.state.usernameError}</Text>
-                    </View>
-                    <View>
-                        <Text style={styles.labels}>Email</Text>
-                        <TextInput 
-                            style={styles.TextField}
-                            selectionColor={"#F06449"}
-                            underlineColorAndroid={"white"}
-                            onChangeText={value => {
-                                this.setState({
-                                    email: value.trim()
-                                })
-                            }}
-                            onBlur={() => {
-                                this.setState({
-                                emailError: validate('email', this.state.email)
-                                })
-                            }}
-                            error={this.state.emailError}/>
-                        <Text style={styles.validation}>{this.state.emailError}</Text>
-                    </View>
-                    <View>
-                        <Text style={styles.labels}>Password</Text>
-                        <TextInput 
-                            style={styles.TextField}
-                            selectionColor={"#F06449"}
-                            underlineColorAndroid={"white"}
-                            secureTextEntry={true}
-                            onChangeText={value => {
-                                this.setState({
-                                    password: value.trim(),
+            <ScrollView style={{flex: 1,  backgroundColor: "#55d3c8",}}>
+                <View style={styles.container}>
+                    <Modal
+                        animationType="fade"
+                        transparent={true}
+                        visible={this.state.loadingModalVisible}
+                        onRequestClose={() => {
+                            this.setState({
+                                loadingModalVisible: false
+                            })
+                        }}>
+                        <View style={[modal.modalContainer, {width: this.state.width,}]}>
+                                <LoadingCircle color="white" />
+                        </View>
+                    </Modal>
+                    <View style={styles.form}>
+                        <View>
+                            <Text style={styles.labels}>Name or username</Text>
+                            <TextInput 
+                                style={styles.TextField}
+                                selectionColor={"#F06449"}
+                                underlineColorAndroid={"white"}
+                                onChangeText={value => {
+                                    this.setState({
+                                        username: value
+                                    })
+                                }}
+                                onBlur={() => {
+                                    this.setState({
+                                    usernameError: validate('username', this.state.username)
+                                    })
+                                }}
+                                error={this.state.usernameError}/>
+                            <Text style={styles.validation}>{this.state.usernameError}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.labels}>Email</Text>
+                            <TextInput 
+                                style={styles.TextField}
+                                selectionColor={"#F06449"}
+                                underlineColorAndroid={"white"}
+                                onChangeText={value => {
+                                    this.setState({
+                                        email: value.trim()
+                                    })
+                                }}
+                                onBlur={() => {
+                                    this.setState({
+                                    emailError: validate('email', this.state.email)
+                                    })
+                                }}
+                                error={this.state.emailError}/>
+                            <Text style={styles.validation}>{this.state.emailError}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.labels}>Password</Text>
+                            <TextInput 
+                                style={styles.TextField}
+                                selectionColor={"#F06449"}
+                                underlineColorAndroid={"white"}
+                                secureTextEntry={true}
+                                onChangeText={value => {
+                                    this.setState({
+                                        password: value.trim(),
+                                        passwordError: validate('password', this.state.password)
+                                    })
+                                }}
+                                onBlur={() => {
+                                    this.setState({
                                     passwordError: validate('password', this.state.password)
-                                })
-                            }}
-                            onBlur={() => {
-                                this.setState({
-                                passwordError: validate('password', this.state.password)
-                                })
-                            }}
-                            error={this.state.passwordError}/>
-                        <Text style={styles.validation}>{this.state.passwordError}</Text>
+                                    })
+                                }}
+                                error={this.state.passwordError}/>
+                            <Text style={styles.validation}>{this.state.passwordError}</Text>
+                        </View>
+
+                            <TouchableOpacity onPress={() => {this.register()}}>
+                                <Button backgroundColor="white" textColor="grey" buttonText="Sign up"/>
+                            </TouchableOpacity>
+
                     </View>
-
-                        <TouchableOpacity onPress={() => {this.register()}}>
-                            <Button backgroundColor="white" textColor="grey" buttonText="Sign up"/>
-                        </TouchableOpacity>
-
-                </View>
                 </View>
             </ScrollView>
         )
@@ -203,7 +218,7 @@ export class RegistrationScreen extends Component {
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
+        flex: 1,
         padding: 50, 
         backgroundColor: "#55d3c8",
     },
@@ -229,7 +244,6 @@ const styles = StyleSheet.create({
 
 const modal = StyleSheet.create({
     modalContainer: {
-        width: Dimensions.get('window').width,
         height: Dimensions.get('window').height,
         alignItems: 'center',
         justifyContent: 'center',

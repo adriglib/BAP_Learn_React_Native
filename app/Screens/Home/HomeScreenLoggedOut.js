@@ -6,6 +6,7 @@ import BigBoldTitleText from '../../Components/Text/BigBoldTitleText';
 import BigLightTitleText from '../../Components/Text/BigLightTitleText';
 import firebase from 'react-native-firebase';
 import * as Animatable from 'react-native-animatable';
+import { AndroidBackHandler } from 'react-navigation-backhandler';
 
 export class HomeScreenLoggedOut extends Component {
 
@@ -38,10 +39,16 @@ export class HomeScreenLoggedOut extends Component {
         Dimensions.removeEventListener('change');
     }
 
+    onBackButtonPressAndroid () {
+        return true;
+   };
+
     render(){
         const { navigate } = this.props.navigation;
         // console.log(firebase.auth().currentUser)
         return (
+            <AndroidBackHandler onBackPress={() => this.onBackButtonPressAndroid()}>
+   
             <View style={{flex: 1}}>
                 {/*<Text onPress={() => navigate('Profile')}>*/}
                     {/*Navigate to Profile*/}
@@ -93,6 +100,9 @@ export class HomeScreenLoggedOut extends Component {
                     </View>
                 </ScrollView>
             </View>
+
+            </AndroidBackHandler>
+   
 
         )
     }

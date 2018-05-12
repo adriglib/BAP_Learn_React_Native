@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
     titleContainer: {
         backgroundColor: '#55d3c8',
         justifyContent: 'flex-start',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         paddingTop: 50,
         paddingBottom : 40,
         paddingRight : 25,

@@ -1,4 +1,4 @@
-package com.heyo;
+package com.learnreactnative;
 
 import android.app.Application;
 
