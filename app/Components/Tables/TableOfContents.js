@@ -7,6 +7,7 @@ import LoadingCircle from '../Loading/LoadingCircle';
 import { StackNavigator } from 'react-navigation';
 import App from '../../Components/General/App';
 
+
 class TableOfContents extends React.Component {
 
     constructor(props) {

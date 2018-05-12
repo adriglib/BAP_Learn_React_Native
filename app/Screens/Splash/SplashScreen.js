@@ -26,31 +26,40 @@ export class SplashScreen extends Component {
         super();
         this.state = {
             loading: true,
+            nullUserIsOnHomepage: false,
         };
     }
     
     componentDidMount() {
-        this.authSubscription = firebase.auth().onAuthStateChanged((user) => {
-            let _this = this;
-            this.setState({
-                loading: false,
-                user,
-            });
-            setTimeout( () => {
-                this.checkLoggedInt();
-             },1000);
-        });
+        this.authSubscription;    
     }
+
+    authSubscription = firebase.auth().onAuthStateChanged((user) => {
+        let _this = this;
+        this.setState({
+            loading: false,
+            user,
+        });
+        setTimeout( () => {
+            this.checkLoggedInt();
+            },1000);
+    });
+    
 
     checkLoggedInt() {
         // The application is initialising
         if (!this.state.loading){
             // The user is an Object, so they're logged in
-            // console.log('Done loading')
             if (this.state.user && this.state.user.isAnonymous != true) {
-               this.props.navigation.navigate('Home')
+                this.props.navigation.navigate('Home')
             } else {  
-                this.props.navigation.navigate('HomeNoLogin')
+                if(this.state.user == null){
+                    this.setState({nullUserIsOnHomepage: true})
+                    this.props.navigation.navigate('HomeNoLogin') 
+                    return;
+                } else if(this.state.nullUserIsOnHomepage == false){
+                    this.props.navigation.navigate('HomeNoLogin')
+                }
             }
         };
     }

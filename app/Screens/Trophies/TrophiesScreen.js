@@ -17,6 +17,8 @@ import AlertButton from '../../Components/Buttons/AlertButton';
 import App from '../../Components/General/App';
 import firebase from 'react-native-firebase';
 
+import * as Animatable from 'react-native-animatable';
+
 
 export class Trophies extends Component {
     
@@ -62,6 +64,11 @@ export class Trophies extends Component {
         const trophiesObject = {
             'first trophy': {
                 title: 'Getting Started',
+                description: 'Thank you for signing up! Joining the React Native community gives you cool a trophy, now go earn all the others.',
+                imgUrl: require('../../../icons/student.png'),
+                },
+            'first': {
+                title: 'First one!',
                 description: 'Good job! You have earned this trophy because you succesfully finished the first quiz.',
                 imgUrl: require('../../../icons/diploma.png'),
                 },
@@ -75,7 +82,7 @@ export class Trophies extends Component {
                 description: 'If you keep up like this, you\'ll be a React Native pro in no time.',
                 imgUrl: require('../../../icons/physics.png'),
                 },
-            'fourth': {
+            'testtrophy': {
                 title: 'Getting Started',
                 description: 'Good job! You have earned this trophy because you succesfully finished the first quiz.',
                 imgUrl: require('../../../icons/backpack.png'),
@@ -115,33 +122,27 @@ export class Trophies extends Component {
                 description: 'You have already done 3 tests, good job..',
                 imgUrl: require('../../../icons/test.png'),
                 },
-            'twelve': {
-                title: 'You\'re the best, keep on learning',
-                description: 'If you keep up like this, you\'ll be a React Native pro in no time.',
-                imgUrl: require('../../../icons/earth-globe.png'),
-                }
         }
 
 
         // const userHasTrophies = false ;
         const userHasTrophies = !(this.state.trophies == undefined || this.state.trophies == null) ;
-
+ 
         let allTrophies;
         let allTrophiesWhenUserHasTrophies;
         let trophies;
         let lockedTrophies;
-// console.log(userHasTrophies);
-        if(userHasTrophies){
-            console.log(this.state.trophies)
+        
+        if(userHasTrophies && (Object.keys(this.state.trophies).length != 0)){
             trophies = 
             Object.keys(trophiesObject)
                 .filter(key => key in this.state.trophies)
                 .map((key, index) => {
                     // console.log(this.state.trophies[key])
                     return ( 
-                        <View key={key} style={skills.trophy}>
+                        <Animatable.View animation="zoomIn" delay={parseInt(index + '00')} key={key} style={skills.trophy}>
                           <AlertButton disabled={false} imageURL={trophiesObject[key].imgUrl} title={trophiesObject[key].title} description={trophiesObject[key].description} dateEarned={this.state.trophies[key]} />
-                        </View>
+                        </Animatable.View>
             )})
 
             lockedTrophies = 
@@ -149,9 +150,9 @@ export class Trophies extends Component {
                 .filter(key => !(key in this.state.trophies))
                 .map((key, index) => {
                     return ( 
-                        <View key={key} style={skills.trophy}>
+                        <Animatable.View animation="zoomIn" delay={parseInt(index + '00')}  key={key} style={skills.trophy}>
                           <AlertButton disabled={true} imageURL={trophiesObject[key].imgUrl} title={trophiesObject[key].title} description={trophiesObject[key].description} dateEarned={this.state.trophies[key]} />
-                        </View>
+                        </Animatable.View>
             )})
         }
         else {
@@ -159,12 +160,10 @@ export class Trophies extends Component {
             Object.keys(trophiesObject)
                 .map((key, index) => {
                     return ( 
-                        <View key={key} style={skills.trophy}>
+                        <Animatable.View animation="zoomIn" delay={parseInt(index + '00')} key={key} style={skills.trophy}>
                           <AlertButton disabled={true} imageURL={trophiesObject[key].imgUrl} title={trophiesObject[key].title} description={trophiesObject[key].description} />
-                        </View>
+                        </Animatable.View>
             )})
-
-            console.log(allTrophies)
         }
 
 
@@ -183,7 +182,7 @@ export class Trophies extends Component {
                         </SmallerLightTitleText>
                     </View>
                     <View style={styles.container}>
-                        {userHasTrophies ? [trophies, lockedTrophies] : allTrophies}
+                        {userHasTrophies && (Object.keys(this.state.trophies).length != 0) ? [trophies, lockedTrophies] : allTrophies}
                     </View>
                 </ScrollView>
             </View>

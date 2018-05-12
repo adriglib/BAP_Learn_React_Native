@@ -93,7 +93,7 @@ export class DocumentationItemScreen extends Component {
                         <HTML html={this.state.htmlContent} 
                             tagsStyles={ 
                                 { 
-                                    h3: { fontSize: 19},
+                                    h3: { fontSize: 19}, 
                                     li: { fontSize: 16},
                                     img: { paddingTop: 20, paddingBottom: 20},
                                     pre: { paddingTop: 20, paddingBottom: 20},

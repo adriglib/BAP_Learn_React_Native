@@ -71,15 +71,22 @@ export class RegistrationScreen extends Component {
     
         if (emailError == null && passwordError== null && usernameError == null) {
             this.openModal();
+            let date = new Date();
+            day = date.getDate();
+            month = date.getMonth();
+            year = date.getFullYear();
+            hours = date.getUTCHours() + 2;
+            minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
 
             firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password, this.state.username)
             .then(async (user) => {
                 firebase.database().ref('Users/' + user._user.uid).set({
                     email: user._user.email,
                     username: this.state.username,
-                    latestQuizNr: 0,
                     experience: 0,
-                    trophies: '',
+                    trophies: {
+                        'first trophy': `${day}-${month}-${year} at ${hours}:${minutes}`,
+                    },
                   });
                   this.itemsRef = firebase.database().ref('Users/' + user._user.uid);
                   let database = this.itemsRef.once('value');

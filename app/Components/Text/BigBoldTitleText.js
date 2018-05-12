@@ -5,6 +5,8 @@ import {    StyleSheet,
     Dimensions
 } from 'react-native';
 
+import * as Animatable from 'react-native-animatable';
+
 export default class BigBoldTitleText extends Component {
     render() {
         return(
@@ -14,6 +16,8 @@ export default class BigBoldTitleText extends Component {
         )
     }
 }
+
+BigBoldTitleText = Animatable.createAnimatableComponent(BigBoldTitleText);
 
 const styles = StyleSheet.create({
     textStyle: {
@@ -26,6 +30,6 @@ const styles = StyleSheet.create({
         // position: 'absolute',
         padding: 20,
         paddingTop: 35,
-        paddingBottom: 35
+        paddingBottom: 15
     }
 });

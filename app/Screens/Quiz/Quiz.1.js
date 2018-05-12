@@ -63,6 +63,7 @@ export class Quiz extends Component {
             experience: nav.state.params.experience,
             quizNr:  nav.state.params.quizNr,
             showNextButton: false,
+            hasEarnedTrophy: false,
         }
     }
 
@@ -94,19 +95,95 @@ export class Quiz extends Component {
         //Now check if they succeeded AND it is the last level.
         let calculatedLevelWithExperience = (this.state.experience / 5) + 1;
 
-        if(succeeded && this.state.quizNr == calculatedLevelWithExperience){
-            // const experience = this.state.experience + 5;
+        const earnTrophy = (name) => {
+            // console.log('earning trophy')
+            
+            this.setState({
+                hasEarnedTrophy: 'test'
+             });
+     
+             AsyncStorage.getItem('@MySuperStore:user').then((values) => {
+                 const value = JSON.parse(values);
+                 
+                 let date = new Date();
+                 day = date.getDate();
+                 month = date.getMonth();
+                 year = date.getFullYear();
+                 hours = date.getHours();
+                 minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
+     
+                 value["trophies"][name.toString()] = `${day}-${month}-${year} at ${hours}:${minutes}`;
+                 // value["username"]= 'test';
+     
+                 console.log(value);
+                 console.log(JSON.stringify(value));
+     
+                 AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(value));
+                 
+                 const loggedInUser = firebase.auth().currentUser;
+                 // firebase.database().ref('Users/' + loggedInUser._user.uid + '/trophies/' + name).set( `${day}-${month}-${year} at ${hours}:${minutes}`);
+             } )
+         }        
 
-            switch(this.state.quizNr) {
-                case 1:
-                    this.earnTrophy('first');
+        // if(succeeded && this.state.quizNr == calculatedLevelWithExperience){
+        if(succeeded){
+            const experience = this.state.experience + 5;
+
+            switch(this.questionNumber) {
+                case 0:
+                    earnTrophy('first');
                     break;
-                case 3:
-                    this.earnTrophy('third');
+                case 1:
+                    earnTrophy('second');
+                    break;
+                case 2:
+                    earnTrophy('third');
                     break;
                 default:
-                   this.earnOnlyExperience();
+                    alert('default');
             } 
+
+            console.log(this.state.hasEarnedTrophy);
+
+            if(this.state.hasEarnedTrophy == true){
+                this.setState({
+                    modalText: 'You have won a trophy! Go check it out on the trophy page. You also earned 5XP!',
+                    hasEarnedTrophy: false
+                });
+            } else {
+                this.setState({
+                    modalText: 'You have passed this course and earned 5XP!',
+                });
+            }
+
+                AsyncStorage.getItem('@MySuperStore:user').then((values) => {
+                    const value = JSON.parse(values);
+
+                    let date = new Date();
+                    day = date.getDate();
+                    month = date.getMonth();
+                    year = date.getFullYear();
+                    hours = date.getHours();
+                    minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
+        
+                    value["trophies"]['testtrophy'] = `${day}-${month}-${year} at ${hours}:${minutes}`;
+
+                    const newExperience = parseInt(value.experience) + 5; 
+                    if(newExperience < 10){
+                        value["experience"] = '0' + newExperience.toString();
+                    } else {
+                        value["experience"] = newExperience.toString();
+                    }
+                                     
+                    this.setState({
+                          experience: newExperience,
+                      })
+
+                    AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(value));
+                    
+                    const loggedInUser = firebase.auth().currentUser;
+                    firebase.database().ref('Users/' + loggedInUser._user.uid + '/experience').set(newExperience);
+                } )
         }else{
             if(!succeeded){
                 this.setState({
@@ -118,66 +195,10 @@ export class Quiz extends Component {
                 });
             }
         }
+     
     }
 
-    earnOnlyExperience(){
-        AsyncStorage.getItem('@MySuperStore:user').then((values) => {
-            const value = JSON.parse(values);
-            const newExperience = parseInt(value.experience) + 5; 
-            if(newExperience < 10){
-                value["experience"] = '0' + newExperience.toString();
-            } else {
-                value["experience"] = newExperience.toString();
-            }
-                             
-            this.setState({
-                  experience: newExperience,
-                  modalText: 'You have passed this course and earned 5XP!',
-              })
 
-            AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(value));
-            
-            const loggedInUser = firebase.auth().currentUser;
-            firebase.database().ref('Users/' + loggedInUser._user.uid + '/experience').set(newExperience);
-        } )
-    }
-
-    earnTrophy(name){
-       // console.log('earning trophy')
-        AsyncStorage.getItem('@MySuperStore:user').then((values) => {
-            const value = JSON.parse(values);
-            
-            let date = new Date();
-            day = date.getDate();
-            month = date.getMonth();
-            year = date.getFullYear();
-            hours = date.getHours();
-            minutes = (date.getMinutes()<10?'0':'') + date.getMinutes();
-
-            const newExperience = parseInt(value.experience) + 5; 
-            if(newExperience < 10){
-                value["experience"] = '0' + newExperience.toString();
-            } else {
-                value["experience"] = newExperience.toString();
-            }
-                                     
-            this.setState({
-                    experience: newExperience,
-                    modalText: 'Great! You have won a trophy and earned 5XP, go check it out on the trophies page.',
-            })
-
-            value["trophies"][name.toString()] = `${day}-${month}-${year} at ${hours}:${minutes}`;
-            // value["username"]= 'test';
-
-            console.log(value);
-
-            AsyncStorage.setItem('@MySuperStore:user', JSON.stringify(value));
-            
-            const loggedInUser = firebase.auth().currentUser;
-            firebase.database().ref('Users/' + loggedInUser._user.uid + '/experience').set(newExperience);
-            firebase.database().ref('Users/' + loggedInUser._user.uid + '/trophies/' + name).set( `${day}-${month}-${year} at ${hours}:${minutes}`);
-        } )
-    }
 
     prev() {
         if (this.questionNumber > 1) {

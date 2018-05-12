@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     fontContainerLight: {
         padding: 20,
         paddingTop: 35,
-        paddingBottom: 35
+        paddingBottom: 10
         // position: 'absolute',
     }
 });

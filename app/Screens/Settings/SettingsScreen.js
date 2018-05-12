@@ -18,10 +18,12 @@ import {
     AsyncStorage
 } from 'react-native';
 
-import BigLightTitleText from '../../Components/Text/BigLightTitleText';
+import BigBoldTitleText from '../../Components/Text/BigBoldTitleText';
 import LoadingCircle from '../../Components/Loading/LoadingCircle';
 import Button from '../../Components/Buttons/SquareLargeButton';
 import firebase from 'react-native-firebase';
+
+import * as Animatable from 'react-native-animatable';
 
 export class SettingsScreen extends Component {
 
@@ -34,23 +36,44 @@ export class SettingsScreen extends Component {
         const { navigate } = this.props.navigation;
         this.state = {
             loadingModalVisible: false,
+            width: Dimensions.get("window").width,
         }
         
     }
+    
 
     checkIfUserIsLoggedIn () {
         if(firebase.auth().currentUser && firebase.auth().currentUser._user.isAnonymous != true){
             return    (
                 <View style={styles.buttonsContainer}>
-                            <TouchableOpacity onPress={() => {this.logout()}}>
+                    <Animatable.View>
+                    <TouchableOpacity onPress={() => {this.logout()}}>
                                 <Button buttonText="Sign out" backgroundColor="#55d3c8" textColor="white"/>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => this.showAlert()}>
+                    </Animatable.View>
+                    <Animatable.View>
+                    <TouchableOpacity onPress={() => this.showAlert()}>
                                 <Text style={styles.deleteProfileText} >Delete profile</Text>
                             </TouchableOpacity>
+                    </Animatable.View>
+
                 </View>
             );
         }
+    }
+
+    componentDidMount() {
+
+        Dimensions.addEventListener('change', () => {
+            let newWidth =  Dimensions.get("window").width;
+            this.setState({
+                width: newWidth
+            });
+        });
+    }
+
+    componentWillUnmount () {
+        Dimensions.removeEventListener('change');
     }
 
     openModal(){
@@ -140,10 +163,14 @@ export class SettingsScreen extends Component {
                         </View>
                     </Modal>
                     <View style={styles.imageContainer}>
-                        <BigLightTitleText style={styles.title}>
+                        <BigBoldTitleText style={styles.title}>
                             Change your settings
-                        </BigLightTitleText>
+                        </BigBoldTitleText>
                     </View>
+                    <View style={[styles.diagonalSide, {            
+                    width:  this.state.width,
+                    borderLeftWidth: Math.sqrt((this.state.width *this.state.width) + 100),
+                    }]}></View>
                     <View style={styles.settingsContainer}>
                         <View style={styles.settingsTextContainer}>
                             <Text style={styles.settingsTitle}>Turn off notifications</Text>
@@ -176,7 +203,8 @@ const styles = StyleSheet.create({
     settingsContainer: {
         display: 'flex',
         flexDirection: 'row',
-        margin: (Dimensions.get('window').width / 12) * 1
+        margin: (Dimensions.get('window').width / 12) * 1,
+        marginBottom: 5,
     },
     settingsTextContainer: {
         width: (Dimensions.get('window').width / 12) * 7
@@ -202,6 +230,13 @@ const styles = StyleSheet.create({
         fontSize: 18,
         margin: 10,
         marginTop: 20
+    },
+    diagonalSide: {
+        borderTopWidth: 50,
+        borderRightWidth: 0,
+        borderTopColor: "#55d3c8",
+        borderRightColor: 'transparent',
+        borderLeftColor: 'transparent',
     }
 })
 

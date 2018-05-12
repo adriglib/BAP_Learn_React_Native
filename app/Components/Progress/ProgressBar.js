@@ -4,6 +4,7 @@ import {    StyleSheet,
     View,
     Dimensions
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 
 export default class ProgressBar extends Component {
 
@@ -27,6 +28,9 @@ export default class ProgressBar extends Component {
         }
       }
       
+    handleViewRef = ref => this.view = ref;
+    bounce = () => this.view.bounce(800).then(endState => console.log(endState.finished ? 'bounce finished' : 'bounce cancelled'));
+
 
     render() {
         var width = (Dimensions.get('window').width / 3.2)*2; 
@@ -45,8 +49,8 @@ export default class ProgressBar extends Component {
                     <View style={styles.barContainer}>
                         <View style={[{width: width}, styles.backgroundBar ]}>
                         </View>
-                        <View style={[{width: width * progress}, styles.progressBar]}>
-                        </View>
+                        <Animatable.View ref={this.handleViewRef} style={[{width: width * progress}, styles.progressBar]}>
+                        </Animatable.View>
                     </View>
                 </View>
             </View>

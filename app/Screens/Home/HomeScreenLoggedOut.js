@@ -4,8 +4,8 @@ import {    StyleSheet, Text, View,ScrollView, Image, Dimensions, TouchableOpaci
 import Button from '../../Components/Buttons/SquareLargeButton';
 import BigBoldTitleText from '../../Components/Text/BigBoldTitleText';
 import BigLightTitleText from '../../Components/Text/BigLightTitleText';
-import App from '../../Components/General/App';
 import firebase from 'react-native-firebase';
+import * as Animatable from 'react-native-animatable';
 
 export class HomeScreenLoggedOut extends Component {
 
@@ -14,16 +14,28 @@ export class HomeScreenLoggedOut extends Component {
         this.state = {
             isAuthenticated: false,
             loading: true,
+            width: Dimensions.get("window").width,
         };
     }
 
     componentDidMount() {
         firebase.auth().signInAnonymously()
-            .then(() => {
-                this.setState({
-                    isAuthenticated: true,
-                });
+        .then(() => {
+            this.setState({
+                isAuthenticated: true,
             });
+        });
+
+        Dimensions.addEventListener('change', () => {
+            let newWidth =  Dimensions.get("window").width;
+            this.setState({
+                width: newWidth
+            });
+        });
+    }
+
+    componentWillUnmount () {
+        Dimensions.removeEventListener('change');
     }
 
     render(){
@@ -36,41 +48,47 @@ export class HomeScreenLoggedOut extends Component {
                 {/*</Text>*/}
                 <ScrollView style={styles.scrollContainer}>
                     <View style={styles.imageContainer}>
-                        <BigLightTitleText style={styles.title}>
-                            Learn React Native
-                        </BigLightTitleText>
+                    <Animatable.View animation="bounceIn" duration={2000}>
+                            <BigBoldTitleText style={styles.title}>
+                                Learn{"\n"}React Native
+                            </BigBoldTitleText>
+                        </Animatable.View>
                     </View>
+                    <View style={[styles.diagonalSide, {            
+                    width:  this.state.width,
+                    borderRightWidth: Math.sqrt((this.state.width *this.state.width) + 100),
+                    }]}></View>
                     <View style={styles.container}>
                         {/* <App></App> */}
                         <TouchableOpacity onPress={() => navigate('Documentation')}>
-                            <View style={styles.menuItem}>
+                            <Animatable.View animation="zoomIn" delay={300} style={[styles.menuItem, {width: (this.state.width / 2) - 15}]}>
                                 <Image
                                 style={styles.menuIcon}
                                 source={require('../../../icons/open-book.png')}
                                 />
                                 <Text style={styles.menuTitle}>Learn it.</Text>
                                 <Text style={styles.menuDescription}>Tips, cheat sheet...</Text>
-                            </View>
+                            </Animatable.View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('LogIn')}>
-                            <View style={styles.menuItem}>
+                            <Animatable.View animation="zoomIn" delay={500} style={[styles.menuItem, {width: (this.state.width / 2) - 15}]}>
                             <Image
                                 style={styles.menuIcon}
                                 source={require('../../../icons/student.png')}
                                 />
                                 <Text style={styles.menuTitle}>Sign in.</Text>
                                 <Text style={styles.menuDescription}>Quiz yourself and earn trophies.</Text>
-                            </View>
+                            </Animatable.View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('Settings')}>
-                            <View style={styles.menuItem}>
+                            <Animatable.View animation="zoomIn" delay={700} style={[styles.menuItem, {width: (this.state.width / 2) - 15}]}>
                                 <Image
                                 style={styles.menuIcon}
                                 source={require('../../../icons/settings.png')}
                                 />
                                 <Text style={styles.menuTitle}>Settings.</Text>
                                 <Text style={styles.menuDescription}>Turn off your notifications.</Text>
-                            </View>
+                            </Animatable.View>
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
@@ -102,23 +120,11 @@ const styles = StyleSheet.create({
         left: 5,
         right: 5
     },
-    homeUp: {
-        flex: 1,
-        margin: 0,
-        padding: 0,
-        top: 0,
-        alignItems: 'center',
-        justifyContent:'center',
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height / 2,
-        resizeMode: 'cover'
-    },
     menuItem: {
-        width: Dimensions.get('window').width / 2 - 15, 
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: 40
+        paddingBottom: 10
     },
     menuIcon: {
         width: 70,
@@ -133,6 +139,14 @@ const styles = StyleSheet.create({
     menuDescription: {
         textAlign: 'center',
         padding: 10,
-        paddingTop: 5
+        paddingTop: 5,
+        paddingBottom: 5
+    },
+    diagonalSide: {
+        borderTopWidth: 50,
+        borderLeftWidth: 0,
+        borderTopColor: "#55d3c8",
+        borderRightColor: 'transparent',
+        borderLeftColor: 'transparent',
     }
 });

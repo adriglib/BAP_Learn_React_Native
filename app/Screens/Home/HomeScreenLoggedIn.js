@@ -5,28 +5,43 @@ import Button from '../../Components/Buttons/SquareLargeButton';
 import BigBoldTitleText from '../../Components/Text/BigBoldTitleText';
 import BigLightTitleText from '../../Components/Text/BigLightTitleText';
 import LoadingCircle from '../../Components/Loading/LoadingCircle';
-import App from '../../Components/General/App';
+import * as Animatable from 'react-native-animatable';
 
+import { AndroidBackHandler } from 'react-navigation-backhandler';
 import firebase from 'react-native-firebase';
 
 export class HomeScreenLoggedIn extends Component {
-    
-//                    <View style={styles.imageContainer}>
-//                        <Image style={styles.homeUp} source={require('../../../img/home_down.png')}/>
-//                    </View>
 
-    constructor(props){  
+    static navigationOptions = {
+        title: 'Home'
+    };
+
+    constructor(props) {  
         super(props)
         const { navigate } = this.props.navigation;
         this.state = {
             loadingModalVisible: false,
+            width: Dimensions.get("window").width,
         }
-
-        console.log(firebase.auth().currentUser._user.isAnonymous);
-        
     }
 
-    openModal(){
+
+
+
+    componentWillMount() {
+        Dimensions.addEventListener('change', () => {
+            let newWidth =  Dimensions.get("window").width;
+            this.setState({
+                width: newWidth
+            });
+        });
+    }
+
+    componentWillUnmount () {
+        Dimensions.removeEventListener('change');
+    }
+
+    openModal() {
         this.setState({
             loadingModalVisible: true,
         })
@@ -58,11 +73,16 @@ export class HomeScreenLoggedIn extends Component {
 
     }
 
+    onBackButtonPressAndroid () {
+         return true;
+    };
 
     render(){
         const { navigate } = this.props.navigation;
         // console.log(firebase.auth().currentUser)
         return (
+            
+            <AndroidBackHandler onBackPress={() => this.onBackButtonPressAndroid()}>
             <View style={{flex: 1}}>
                 {/*<Text onPress={() => navigate('Profile')}>*/}
                     {/*Navigate to Profile*/}
@@ -74,7 +94,7 @@ export class HomeScreenLoggedIn extends Component {
                     visible={this.state.loadingModalVisible}
                     onRequestClose={() => {
                         this.setState({
-                            loadingModalVisible: false
+                            loadingModalVisible: false,
                         })
                     }}>
                     <View style={modal.modalContainer}>
@@ -83,52 +103,57 @@ export class HomeScreenLoggedIn extends Component {
                     </Modal>
 
                     <View style={styles.imageContainer}>
-                        <Text></Text>
-                        <BigBoldTitleText style={styles.title}>
-                            Learn{"\n"}React Native
-                        </BigBoldTitleText>
+                        <Animatable.View animation="bounceIn" duration={2000}>
+                            <BigBoldTitleText style={styles.title}>
+                                Learn{"\n"}React Native
+                            </BigBoldTitleText>
+                        </Animatable.View>
                     </View>
+                    <View style={[styles.diagonalSide, {            
+                    width:  this.state.width,
+                    borderRightWidth: Math.sqrt((this.state.width *this.state.width) + 100),
+                    }]}></View>
                     <View style={styles.container}>
                         {/*<App></App>*/}
                         <TouchableOpacity onPress={() => navigate('Documentation')}>
-                            <View style={styles.menuItem}>
+                            <Animatable.View animation="zoomIn" delay={300} style={[styles.menuItem, {width: (this.state.width / 2) - 15}]}>
                                 <Image
                                 style={styles.menuIcon}
                                 source={require('../../../icons/open-book.png')}
                                 />
                                 <Text style={styles.menuTitle}>Learn it.</Text>
                                 <Text style={styles.menuDescription}>Tips, cheat sheet...</Text>
-                            </View>
+                            </Animatable.View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('Levels')}>
-                            <View style={styles.menuItem}>
+                            <Animatable.View animation="zoomIn" delay={500} style={[styles.menuItem, {width: (this.state.width / 2) - 15}]}>
                             <Image
                                 style={styles.menuIcon}
                                 source={require('../../../icons/logo.png')}
                                 />
                                 <Text style={styles.menuTitle}>Quiz it.</Text>
                                 <Text style={styles.menuDescription}>Earn trophies and XP.</Text>
-                            </View>
+                            </Animatable.View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('Trophies')}>
-                            <View style={styles.menuItem}>
+                            <Animatable.View animation="zoomIn" delay={700} style={[styles.menuItem, {width: (this.state.width / 2) - 15}]}>
                                 <Image
                                 style={styles.menuIcon}
                                 source={require('../../../icons/trophy.png')}
                                 />
                                 <Text style={styles.menuTitle}>Trophies.</Text>
                                 <Text style={styles.menuDescription}>See the trophies you have earned..</Text>
-                            </View>
+                            </Animatable.View>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => navigate('Settings')}>
-                            <View style={styles.menuItem}>
+                            <Animatable.View animation="zoomIn" delay={900} style={[styles.menuItem, {width: (this.state.width / 2) - 15}]}>
                             <Image
                                 style={styles.menuIcon}
                                 source={require('../../../icons/settings.png')}
                                 />
                                 <Text style={styles.menuTitle}>Settings.</Text>
                                 <Text style={styles.menuDescription}>Sign off, delete profile, notifications...</Text>
-                            </View>
+                            </Animatable.View>
                         </TouchableOpacity>
                         {/* <TouchableOpacity onPress={() => {this.logout()}}>
                             <Button buttonText="Sign out"/>
@@ -136,6 +161,7 @@ export class HomeScreenLoggedIn extends Component {
                     </View>
                 </ScrollView>
             </View>
+            </AndroidBackHandler>
 
         )
     }
@@ -163,23 +189,11 @@ const styles = StyleSheet.create({
         left: 5,
         right: 5
     },
-    homeUp: {
-        flex: 1,
-        margin: 0,
-        padding: 0,
-        top: 0,
-        alignItems: 'center',
-        justifyContent:'center',
-        width: Dimensions.get('window').width,
-        height: Dimensions.get('window').height / 2,
-        resizeMode: 'cover'
-    },
     menuItem: {
-        width: Dimensions.get('window').width / 2 - 15, 
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingBottom: 40
+        paddingBottom: 10
     },
     menuIcon: {
         width: 70,
@@ -194,7 +208,15 @@ const styles = StyleSheet.create({
     menuDescription: {
         textAlign: 'center',
         padding: 10,
-        paddingTop: 5
+        paddingTop: 5,
+        paddingBottom: 5
+    },
+    diagonalSide: {
+        borderTopWidth: 50,
+        borderLeftWidth: 0,
+        borderTopColor: "#55d3c8",
+        borderRightColor: 'transparent',
+        borderLeftColor: 'transparent',
     }
 });
 

@@ -21,6 +21,7 @@ import Button from '../../Components/Buttons/SquareLargeButton';
 import TextField from '../../Components/Forms/TextField';
 import LoadingCircle from '../../Components/Loading/LoadingCircle';
 import validate from '../../Components/Forms/ValidateWrapper';
+import * as Animatable from 'react-native-animatable';
 
 export class LogInScreen extends Component {
     
@@ -165,13 +166,18 @@ export class LogInScreen extends Component {
                             error={this.state.passwordError}/>
                         <Text style={styles.validation}>{this.state.passwordError}</Text>
                     </View>
+                    <Animatable.View animation="pulse" delay={5000} durarion={10000} iterationCount="infinite">
+                        <Animatable.View animation="zoomIn">
+                            <TouchableOpacity onPress={() => {this.onLogin()}}>
+                                <Button backgroundColor="white" textColor="grey" buttonText="Sign in"/>
+                            </TouchableOpacity>
+                        </Animatable.View>
+                    </Animatable.View>
 
-                        <TouchableOpacity onPress={() => {this.onLogin()}}>
-                            <Button backgroundColor="white" textColor="grey" buttonText="Sign in"/>
-                        </TouchableOpacity>
-                        <View>
+
+                        <Animatable.View animation="bounceIn">
                             <Text style={styles.warning}>{this.state.error}</Text>
-                        </View>
+                        </Animatable.View>
                         <View>
                             <TouchableOpacity onPress={() => navigate('Registration')}>
                                 <Text style={styles.register}>Don't have an account? Register.</Text>

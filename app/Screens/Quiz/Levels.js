@@ -16,7 +16,9 @@ import ProgressBar from '../../Components/Progress/ProgressBar';
 import LoadingCircle from '../../Components/Loading/LoadingCircle';
 import App from '../../Components/General/App';
 import firebase from 'react-native-firebase';
-
+import { NavigationActions } from 'react-navigation';
+import * as Animatable from 'react-native-animatable';
+import { AndroidBackHandler } from 'react-navigation-backhandler';
 
 export class Levels extends Component {
     
@@ -33,13 +35,12 @@ export class Levels extends Component {
         }
     }
 
-    // componentDidMount(){
-    //     this.getUserInfo();
-    // }
+
 
     componentWillMount(){
         this.getUserInfo();
     }
+
 
     async getUserInfo() {
 
@@ -62,6 +63,13 @@ export class Levels extends Component {
             // Error retrieving data
           }
     }
+    
+    onBackButtonPressAndroid () {
+       const navigate = this.props.navigation;
+       this.props.navigation.navigate('Home');
+        return true;
+      };
+    
 
 
     render(){
@@ -217,18 +225,14 @@ export class Levels extends Component {
                 }
             },
         }
-
-        // alert(this.state.canRender);
-
         const {navigate} = this.props.navigation;
-  
         const _that= this;
         const levels = 
         Object.keys(levelWrapper).map( function(key, index) {
                 const experience = parseInt(_that.state.experience);
             // Object.keys(levelWrapper[key].skills).map( function(e) {
                 return ( 
-                    <View key ={key} style={skills.levelWrapper}>
+                    <Animatable.View animation="fadeInUp" delay={800} key ={key} style={skills.levelWrapper}>
                             <Text style={skills.levelTitle}>{levelWrapper[key].title}</Text>
                             <Text style={skills.levelDescription}>{levelWrapper[key].description}</Text>
                             <View style={skills.grid}>
@@ -246,20 +250,22 @@ export class Levels extends Component {
                                             <Image style={skills.icon} source={levelWrapper[key].skills[e].imgUrl}/>
                                             <View style={skills.checkMarkContainer}>
                                                  {completedText ? 
-                                                    <Text style={skills.skillLevel}>✔</Text>
+                                                    <Text style={[skills.skillLevel, skills.completedLevel]}>✔</Text>
                                                     : 
-                                                    currentLevelText ? <Text style={skills.skillLevel}>🕑</Text> : <Text></Text>
+                                                    currentLevelText ? <Text style={[skills.skillLevel, skills.pendingLevel]}>🕑</Text> : <Text></Text>
                                                     }
                                             </View>
                                         </TouchableOpacity>
                                  )
                                 })}
                             </View>
-                    </View>
+                    </Animatable.View>
                 )
             // });
         });
+
         return (
+            <AndroidBackHandler onBackPress={() => this.onBackButtonPressAndroid()}>
             <View style={{flex: 1}}>
                 <ScrollView style={styles.scrollContainer}>
                     <View style={styles.imageContainer}>
@@ -267,14 +273,15 @@ export class Levels extends Component {
                            React Native Skills
                         </SmallerLightTitleText>
                     </View>
-                    <View style={styles.progressContainer}>
+                    <Animatable.View animation="fadeIn" delay={150} style={styles.progressContainer}>
                        {this.state.canRender ? <ProgressBar username={this.state.username} xp={this.state.experience} progress={this.state.experience}/> : <LoadingCircle></LoadingCircle>}
-                    </View>
+                    </Animatable.View>
                     <View style={styles.container}>
                         {levels}
                     </View>
                 </ScrollView>
-            </View>
+            </View>     
+            </AndroidBackHandler>
         )
     }
 }
@@ -350,7 +357,7 @@ const skills = StyleSheet.create({
         margin: 10,
         marginLeft: 0,
         marginTop: 0,
-        // backgroundColor: '#f7f7f7',
+        backgroundColor: '#f7f7f7',
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -365,12 +372,13 @@ const skills = StyleSheet.create({
         flexGrow: 1,
         height: Dimensions.get('window').width / 3,
         borderRadius: 5,
+        backgroundColor: '#f9f9f9',
         margin: 10,
         marginLeft: 0,
         marginTop: 0,
-        backgroundColor: '#f7f7f7',
         justifyContent: 'center',
         alignItems: 'center',
+        opacity: 0.5,
     },
     disabledSkillTitle: {
         fontWeight: 'bold',
@@ -380,9 +388,30 @@ const skills = StyleSheet.create({
         paddingTop:5,
     },
     checkMarkContainer:{
+       
         flexDirection: 'row',
         justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+        alignSelf: 'stretch',
+        flexGrow: 1,
+
         flex: 1,
+    },
+    completedLevel: {
+        backgroundColor: '#55d3c8',
+        borderTopLeftRadius: 10,
+        borderBottomRightRadius: 5,
+        color: 'white',
+        padding: 5,
+        paddingBottom: 7,
+    },
+    pendingLevel: {
+        backgroundColor: '#ffcc00',
+        borderTopLeftRadius: 10,
+        borderBottomRightRadius: 5,
+        color: 'white',
+        padding: 5,
+        paddingBottom: 7,
     },
     skillLevel:{
         fontSize: 20,   
