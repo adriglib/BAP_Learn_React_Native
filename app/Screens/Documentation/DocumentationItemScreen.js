@@ -6,6 +6,8 @@ import firebase from 'react-native-firebase';
 // import Markdown from 'react-native-markdown-renderer';
 // import { MarkdownView } from 'react-native-markdown-view';
 import HTML from 'react-native-render-html';
+import { YellowBox } from 'react-native';
+YellowBox.ignoreWarnings(['Warning: Failed prop type:', 'Module RCTImageLoader']);
 
 
 
@@ -93,8 +95,10 @@ export class DocumentationItemScreen extends Component {
                         <HTML html={this.state.htmlContent} 
                             tagsStyles={ 
                                 { 
-                                    h3: { fontSize: 19}, 
-                                    li: { fontSize: 16},
+                                    h2: { fontSize: 20, fontWeight: 'bold'}, 
+                                    h3: { fontSize: 19, fontWeight: 'bold'}, 
+                                    li: { fontSize: 15},
+                                    p: { fontSize: 16, paddingTop: 20, paddingBottom: 20},
                                     img: { paddingTop: 20, paddingBottom: 20},
                                     pre: { paddingTop: 20, paddingBottom: 20},
                                 }

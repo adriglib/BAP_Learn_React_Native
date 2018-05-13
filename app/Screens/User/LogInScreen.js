@@ -95,9 +95,9 @@ export class LogInScreen extends Component {
 
         
 
-            firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+            firebase.auth().signInAndRetrieveDataWithEmailAndPassword(this.state.email, this.state.password)
             .then(async (user) => {
-                this.itemsRef = firebase.database().ref('Users/' + user._user.uid);
+                this.itemsRef = firebase.database().ref('Users/' + firebase.auth().currentUser._user.uid);
                 let database = this.itemsRef.once('value');
                 database.then(items => {
                     // console.log(items._value.experience)

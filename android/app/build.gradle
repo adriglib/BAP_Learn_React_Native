@@ -157,14 +157,14 @@ dependencies {
         implementation "com.facebook.react:react-native:+"  // From node_modules
 
         // Firebase dependencies
-        implementation "com.google.android.gms:play-services-base:12.0.1"
-        implementation "com.google.android.gms:play-services-auth:12.0.1"
-        implementation "com.google.firebase:firebase-core:12.0.1"
-        implementation "com.google.firebase:firebase-database:12.0.1"
-        implementation "com.google.firebase:firebase-auth:12.0.1"
+        implementation "com.google.android.gms:play-services-base:15.0.0"
+        implementation "com.google.android.gms:play-services-auth:15.0.1"
+        implementation "com.google.firebase:firebase-core:15.0.2"
+        implementation "com.google.firebase:firebase-database:15.0.0"
+        implementation "com.google.firebase:firebase-auth:15.1.0"
 
-        // Notification dependencies
-        implementation "com.google.firebase:firebase-messaging:12.0.1"
+        // // Notification dependencies
+        implementation "com.google.firebase:firebase-messaging:15.0.2"
         implementation 'me.leolin:ShortcutBadger:1.1.21@aar' // <-- Add this line if you wish to use badge on Android
 }
 

@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
             flexWrap: 'wrap',
             justifyContent: 'center',
             alignItems: 'center',
+            backgroundColor: 'white',
     },
 });
 

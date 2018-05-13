@@ -95,7 +95,7 @@ export class RegistrationScreen extends Component {
 
             firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password, this.state.username)
             .then(async (user) => {
-                firebase.database().ref('Users/' + user._user.uid).set({
+                firebase.database().ref('Users/' + firebase.auth().currentUser._user.uid).set({
                     email: user._user.email,
                     username: this.state.username,
                     experience: 0,
@@ -103,7 +103,7 @@ export class RegistrationScreen extends Component {
                         'first trophy': `${day}-${month}-${year} at ${hours}:${minutes}`,
                     },
                   });
-                  this.itemsRef = firebase.database().ref('Users/' + user._user.uid);
+                  this.itemsRef = firebase.database().ref('Users/' + firebase.auth().currentUser._user.uid);
                   let database = this.itemsRef.once('value');
                   database.then(items => {
                       // console.log(items._value.experience)
