@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { HeaderBackButton, StackNavigator } from 'react-navigation';
-import { StyleSheet, Text, View, ScrollView, AsyncStorage, Modal, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, AsyncStorage } from 'react-native';
 import firebase from 'react-native-firebase';
 //import Button  from './app/Components/Button';
 import { HomeScreenLoggedIn }  from './app/Screens/Home/HomeScreenLoggedIn';
@@ -15,7 +15,7 @@ import {LogInScreen} from "./app/Screens/User/LogInScreen";
 import {RegistrationScreen} from "./app/Screens/User/RegistrationScreen";
 import { HomeScreenLoggedOut } from './app/Screens/Home/HomeScreenLoggedOut';
 import localNotification from './app/Utils/localNotification';
-import Button from './app/Components/Buttons/SquareLargeButton';
+
 
 
 import type { Notification, NotificationOpen } from 'react-native-firebase';
@@ -208,27 +208,6 @@ const NavigationApp = StackNavigator({
     },
 });
 
-
-
-const tips = {
-    components : {
-        title: 'Smart vs Dumb Components',
-        info: 'Dividing your app’s logic into two categories is helps you reuse your components better. Smart components, also known as the container components are concerned with the actual working of the UI. It is responsible for making API calls, fetching data, managing the state and so on. They have zero knowledge of how the data is presented to the user. Instead, it transfers the data over to the dumb components as props. Dumb components, popularly known as presentational components, are concerned with how the data is presented and the actual appearance of the app. This is where all the HTML and the styling for that particular UI element is rendered. They use the props received in a meaningful way and have no dependencies on any state management libraries. You can bind them with other container components, making them reusable as long as the props match.'
-    },
-    stylesheet: {
-        title: 'Inline styling is not always the way to go',
-        info: 'You can write your styles inline but that’s usually not the best idea. There are times to take advantage of inline styles but when in doubt, use StyleSheet, import { StyleSheet } from \'react-native\'. It’s often worth splitting your styles from your component code and importing them into your component. Using StyleSheet is an easy way to handle the maintainability of your front-end codebase.'
-    },
-    dimensions: {
-        title: 'Use Dimensions for better responsiveness!',
-        info: 'You can pull Dimensions from React Native, import { Dimensions } from \'react-native\'. This allows you to get the window width and height of the users device which can be very helpful in certain cases. Example: const { width, height } = Dimensions.get(\'window\'). Be careful with this, if you find yourself using dimensions too much it probably means you aren’t leveraging Flexbox well enough. '
-    },
-    constants: {
-        title: 'Clean your code by learning constants',
-        info: 'Much like using variables in standard CSS pre-processors, I’d recommend a similar strategy in React Native styling. It will allow you to define certain values in one location and re-use it throughout your styles. It’s massively beneficial when it comes to the maintainability of your styles. To implement this, simply import an object composed of styling properties. '
-    }
-}
-
 // const localNotification = new firebase.notifications.Notification(
 //     {
 //             sound: 'default',
@@ -251,17 +230,11 @@ export default class MyFirstApp extends Component {
         super();
         this.makeNotificationChannel();
         this.checkIfNotificationIsOpen();
-        this.checkIfAppWasOpenedFromClosed();
 
         this.state = {
             firstLaunch: null,
-            modalVisible: false,
-            modalTitle: '',
-            modalDescription: ''
         };
     }
-
-
 
     componentDidMount() {
 
@@ -321,126 +294,56 @@ export default class MyFirstApp extends Component {
           // You have not opened the application so the 
           AsyncStorage.getItem("alreadyLaunched").then(value => {
             if(value == null){
-                 notificationDate = 1514804400000; //01 Jan 2018, 12h00: Default hour: 12h
+                 notificationDate = new Date("June 14, 2018 12:00:00");
                  AsyncStorage.setItem('alreadyLaunched', 'true');               
-                 AsyncStorage.setItem('notificationTime', '1514804400000');
-                 AsyncStorage.setItem('showNotifications', 'true');
+                 AsyncStorage.setItem('notificationTime', notificationDate.getTime());
 
-                 this.makeANotification(notificationDate);
+                 this.makeANotification(notificationDate.getTime());
+                 this.setState({firstLaunch: true});
             }
             else{
                 AsyncStorage.getItem("notificationTime").then(value => {
-                    // console.log('Reeds gelaunched dus notificatietijd blijft zelfde als ervoor.');
-                    // console.log('Reeds opgeslagen tijd:', parseInt(value));
+                    console.log('opgeslagen tijd',value);
+                    console.log('Reeds gelaunched dus notificatietijd blijft zelfde als ervoor.');
 
-                    this.makeANotification(parseInt(value));
+                    this.makeANotification(value);
+                    this.setState({firstLaunch: false});
                 })
             }})
         }  
 
       makeANotification(notificationTime) {
-        // console.log('Notificatieschedule zal worden berekend op basis van:', notificationTime)       
+        console.log('datum waar notificatie wordt berekend', notificationTime)
 
-        AsyncStorage.getItem("showNotifications").then(value => {
-            console.log('Showing Notifications', value);
-            if(value == 'true' || value == null){
-                if(value == null){
-                    'value is null dus notificatie wordt getoond'
-                }
-                else {
-                    'value is true dus notificatie wordt getoond'
-                }
-                firebase.notifications().scheduleNotification(localNotification, {
-                    fireDate: notificationTime,
-                    repeatInterval: 'minute'
-                })
+        AsyncStorage.getItem("notificationTime").then(value => {
+            if(value == null){
+                AsyncStorage.setItem('notificationTime', '1526724000000');
+                notificationTime = '1514804400000'
             }
-            else {
-                firebase.notifications().cancelNotification('notificationId')
-            }
-        })
+  
 
-        // firebase.notifications().scheduleNotification(localNotification, {
-        //     fireDate: dateTest.getTime(),
-        //     repeatInterval: 'minute'
-        // })
-      }
-
-      checkIfAppWasOpenedFromClosed() {
-        firebase.notifications().getInitialNotification()
-        .then((notificationOpen: NotificationOpen) => {
-          if (notificationOpen) {
-            // App was opened by a notification
-            // Get the action triggered by the notification being opened
-            const action = notificationOpen.action;
-            this.getRandomNotification();
-            this.setState({modalVisible: true})
-            // Get information about the notification that was opened
-            const notification: Notification = notificationOpen.notification;  
-            firebase.notifications().removeAllDeliveredNotifications();
-          }
+            firebase.notifications().scheduleNotification('notificationId', {
+                fireDate: notificationTime,
+                repeatInterval: 'minute'
+            })
         });
       }
+
 
       checkIfNotificationIsOpen(){
         this.notificationOpenedListener = firebase.notifications().onNotificationOpened((notificationOpen: NotificationOpen) => {
             // Get information about the notification that was opened
             const notification: Notification = notificationOpen.notification;
-            // Select a random doc page to go to.
-            // Navigate to that page.
-            // console.log(navigate)
-            // this.props.navigation.navigate('Detail');
-            
-            this.getRandomNotification();
-            this.setState({modalVisible: true})
-            firebase.notifications().removeAllDeliveredNotifications();
             // console.log(notification);
         });
-      }
-
-      getRandomNotification () {
-          console.log(Object.keys(tips).length);
-          let randomTipIndex =  Math.floor(Math.random() * Object.keys(tips).length);
-          console.log(randomTipIndex);
-          let randomTip = Object.keys(tips)[randomTipIndex];
-          console.log(randomTip)
-          console.log(tips[randomTip])
-          this.setState({
-              modalTitle: tips[randomTip].title,
-              modalDescription: tips[randomTip].info,
-          })
-
       }
 
      
     
    
       render() {
-        return (
-          <View style={{flex:1}}>
-            <Modal
-                animationType="slide"
-                transparent={false}
-                visible={this.state.modalVisible}
-                onRequestClose={() => {
-                    alert('Modal has been closed.');
-                }}>
-                <View style={modal.container}>
-                    <View style={modal.itmes}>
-                        <Text style={modal.title}>{this.state.modalTitle}</Text>
-                        <Text style={modal.description}>{this.state.modalDescription}</Text>
-                    </View>
-                    <View style={modal.buttonContainer}>
-                        <TouchableOpacity style={modal.touchable} onPress={() => {this.setState({modalVisible: false})}}>
-                                    <Button style={modal.button} buttonText="Close tip" backgroundColor="#55d3c8" textColor="white"/>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </Modal>
-            <NavigationApp />
-          </View>
-        );
-      }
+        return <NavigationApp />;
+    }
 }
 
 const styles = StyleSheet.create({
@@ -454,31 +357,4 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         padding: 3,
     }
-});
-
-const modal = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignContent: 'space-between',
-        backgroundColor: '#FFF',
-        padding: 25
-    },
-    title: {
-        fontWeight: 'bold',
-        fontSize: 20,
-        paddingBottom: 35
-    },
-    description: {
-        fontSize: 17
-    },
-    buttonContainer: {
-        marginTop: 50,
-        justifyContent: 'center'
-    },
-    touchable: {
-        justifyContent: 'center',
-        alignSelf: 'center',
-        alignItems: 'center'
-    },
 });

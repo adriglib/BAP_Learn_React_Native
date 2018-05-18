@@ -1,0 +1,68 @@
+%!Adobe-FontList 1.19
+%Locale:0x409
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Invalid
+OutlineFileName:D:\BAP\React Native\Heyo\icons\Font\flaticon.css
+FileModTime:1519942334
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Invalid
+OutlineFileName:D:\BAP\React Native\Heyo\icons\Font\Flaticon.eot
+FileModTime:1519942334
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Invalid
+OutlineFileName:D:\BAP\React Native\Heyo\icons\Font\flaticon.html
+FileModTime:1519942334
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Invalid
+OutlineFileName:D:\BAP\React Native\Heyo\icons\Font\Flaticon.svg
+FileModTime:1519942334
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Flaticon
+FamilyName:Flaticon
+StyleName:Medium
+FullName:Flaticon
+MenuName:Flaticon
+StyleBits:0
+WritingScript:Roman
+OutlineFileName:D:\BAP\React Native\Heyo\icons\Font\Flaticon.ttf
+DataFormat:sfntData
+hasSVG:no
+VariableFontType:NonVariableFont
+FileLength:25912
+FileModTime:1519942334
+WeightClass:500
+WidthClass:5
+AngleClass:0
+NameArray:0,Mac,4,Flaticon
+NameArray:0,Win,1,Flaticon
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Invalid
+OutlineFileName:D:\BAP\React Native\Heyo\icons\Font\Flaticon.woff
+FileModTime:1519942334
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Invalid
+OutlineFileName:D:\BAP\React Native\Heyo\icons\Font\_flaticon.scss
+FileModTime:1519942334
+%EndFont
+

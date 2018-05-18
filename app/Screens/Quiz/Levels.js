@@ -39,7 +39,42 @@ export class Levels extends Component {
 
     componentWillMount(){
         this.getUserInfo();
+        // this.makeAndShowNotification()
     }
+
+    // makeAndShowNotification(){
+    //     console.log('make notification')
+    //     const notification = new firebase.notifications.Notification()
+    //     .setNotificationId('notificationId')
+    //     .setTitle('Daily Reminder')
+    //     .setBody('Learn more about React Native!')
+    //     .setData({
+    //         key1: 'value1',
+    //         key2: 'value2',
+    //     })
+    //     .android.setChannelId('tips-tricks-channel')
+    //     .android.setSmallIcon('https://raw.githubusercontent.com/adriglib/BAP_Learn_React_Native/rename-app/notification.png');
+
+    //     console.log(notification);
+
+    //     try {
+    //         firebase.notifications().displayNotification(notification)
+    //       } catch (err) {
+    //         console.log(err)
+    //       } 
+
+    //     // const date = new Date();
+    //     // console.log(date.getTime())
+
+    //     // date.setSeconds(date.getSeconds() + 5);
+
+    //     // console.log(date.getTime())
+       
+    //     // firebase.notifications().scheduleNotification(notification, {
+    //     //     fireDate: date.getTime(),
+    //     // })
+        
+    // }
 
 
     async getUserInfo() {
